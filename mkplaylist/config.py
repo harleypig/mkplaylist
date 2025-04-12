@@ -84,14 +84,11 @@ def get_cache_dir() -> Path:
   Returns:
       Path: The cache directory path
   """
-  if os.name == 'nt':                            # Windows
+  if os.name == 'nt':   # Windows
     cache_dir = Path(os.environ.get('LOCALAPPDATA', ''))
     base_dir = cache_dir / 'mkplaylist' / 'cache'
-  else:                                          # Unix/Linux/Mac
-    cache_dir = Path(
-      os.environ.get('XDG_CACHE_HOME',
-                     Path.home() / '.cache')
-    )
+  else:                 # Unix/Linux/Mac
+    cache_dir = Path(os.environ.get('XDG_CACHE_HOME', Path.home() / '.cache'))
     base_dir = cache_dir / 'mkplaylist'
 
   # Create directory if it doesn't exist
@@ -112,6 +109,8 @@ def get_state_dir() -> Path:
   Returns:
       Path: The state directory path
   """
+  # Refactor this function get the state dir first, then append 'mkplaylist',
+  # AI!
   if os.name == 'nt':                                      # Windows
     base_dir = Path(
       os.environ.get('LOCALAPPDATA', '')
