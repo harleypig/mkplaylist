@@ -1,3 +1,4 @@
+
 # Installation Guide
 
 This guide will walk you through the process of installing the mkplaylist
@@ -42,8 +43,8 @@ The recommended way to install mkplaylist is using [pipx](https://pypa.github.io
 python -m pip install --user pipx
 python -m pipx ensurepath
 
-# Install mkplaylist
-pipx install mkplaylist
+# Install mkplaylist directly from the GitHub repository
+pipx install git+https://github.com/harleypig/mkplaylist.git
 ```
 
 Using pipx provides several benefits:
@@ -54,32 +55,40 @@ Using pipx provides several benefits:
 
 ### Using pip
 
+If you prefer, you can also install mkplaylist using pip directly from the GitHub repository:
+
+```bash
+pip install git+https://github.com/harleypig/mkplaylist.git
+```
+
 If you prefer, you can also install mkplaylist using pip:
 
 ```bash
 pip install mkplaylist
 ```
 
-```
-
 ### Installing from Source
+
+For development or if you want to make modifications:
 
 If you prefer to install from source:
 
 1. Clone the repository:
-
+   ```bash
+   
    ```bash
    git clone https://github.com/harleypig/mkplaylist.git
    cd mkplaylist
    ```
-    
-
+   
 2. Install the package in development mode:
-
+   ```bash
+   
    ```bash
    pip install -e .
    ```
-    
+
+This method is useful if you plan to modify the code or contribute to the project.
 
 ## Configuration
 
@@ -106,15 +115,20 @@ To verify that mkplaylist is installed correctly, run:
 mkplaylist --version
 ```
 
-```
-
-You should see the version number of the installed package.
-
 If you installed with pipx, you can also verify the installation with:
 
 ```bash
+```bash
 pipx list
 ```
+
+For repository installations, you can check which version you have installed:
+
+```bash
+pip show mkplaylist
+```
+
+This will display information about the installed package, including the version and where it was installed from.
 
 This will show all applications installed with pipx, including mkplaylist.
 
@@ -137,14 +151,17 @@ Guide](getting_started.md) to learn how to use the application.
    - Ensure your Spotify redirect URI matches what you registered
 
 3. **Package dependencies issues**
-   - If installed with pipx: Try reinstalling with `pipx uninstall mkplaylist && pipx install mkplaylist`
-   - If installed with pip: Try reinstalling with `pip install --upgrade --force-reinstall mkplaylist`
+   - If installed with pipx: Try reinstalling with `pipx uninstall mkplaylist && pipx install git+https://github.com/harleypig/mkplaylist.git`
+   - If installed with pip: Try reinstalling with `pip install --upgrade --force-reinstall git+https://github.com/harleypig/mkplaylist.git`
 
 4. **pipx installation issues**
    - Make sure you have Python 3.7+ installed
    - Try running `python -m pip install --user --upgrade pipx`
    - On some systems, you may need to log out and log back in after running `pipx ensurepath`
 
+5. **Git repository access issues**
+   - Ensure you have Git installed on your system
+   - Check your internet connection
+   - If behind a firewall, ensure you have access to GitHub
+
 If you encounter any other issues, please check the project's GitHub repository for known issues or to report a new one.
-
-
