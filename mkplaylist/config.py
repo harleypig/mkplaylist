@@ -58,15 +58,15 @@ def get_config_dir() -> Path:
   Returns:
       Path: The configuration directory path
   """
-  # Refactor this code to get the config dir first, then append 'mkplaylist',
-  # AI!
   if os.name == 'nt':                            # Windows
-    base_dir = Path(os.environ.get('APPDATA', '')) / 'mkplaylist' / 'config'
+    config_dir = Path(os.environ.get('APPDATA', ''))
+    base_dir = config_dir / 'mkplaylist' / 'config'
   else:                                          # Unix/Linux/Mac
-    base_dir = Path(
+    config_dir = Path(
       os.environ.get('XDG_CONFIG_HOME',
                      Path.home() / '.config')
-    ) / 'mkplaylist'
+    )
+    base_dir = config_dir / 'mkplaylist'
 
   # Create directory if it doesn't exist
   base_dir.mkdir(parents=True, exist_ok=True)
