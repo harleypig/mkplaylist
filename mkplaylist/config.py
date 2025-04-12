@@ -48,7 +48,7 @@ def get_config_dir() -> Path:
 
   Following XDG Base Directory Specification:
   - On Unix/Linux/Mac: $XDG_CONFIG_HOME/mkplaylist (~/.config/mkplaylist by default)
-  - On Windows: %APPDATA%\mkplaylist\config
+  - On Windows: %APPDATA%\\mkplaylist\\config
 
   Returns:
       Path: The configuration directory path
@@ -72,7 +72,7 @@ def get_cache_dir() -> Path:
 
   Following XDG Base Directory Specification:
   - On Unix/Linux/Mac: $XDG_CACHE_HOME/mkplaylist (~/.cache/mkplaylist by default)
-  - On Windows: %LOCALAPPDATA%\mkplaylist\cache
+  - On Windows: %LOCALAPPDATA%\\mkplaylist\\cache
 
   Returns:
       Path: The cache directory path
@@ -98,7 +98,7 @@ def get_state_dir() -> Path:
 
   Following XDG Base Directory Specification:
   - On Unix/Linux/Mac: $XDG_STATE_HOME/mkplaylist (~/.local/state/mkplaylist by default)
-  - On Windows: %LOCALAPPDATA%\mkplaylist\state
+  - On Windows: %LOCALAPPDATA%\\mkplaylist\\state
 
   This directory is used for persistent application state data like authentication tokens.
 
