@@ -1,6 +1,9 @@
 # Configuration Architecture
 
-The mkplaylist configuration system is designed to be modular, extensible, and type-safe. This document explains the architecture of the configuration system, how to add new service configurations, and how to use the configuration API.
+The mkplaylist configuration system is designed to be modular, extensible, and
+type-safe. This document explains the architecture of the configuration
+system, how to add new service configurations, and how to use the
+configuration API.
 
 ## Overview
 
@@ -30,11 +33,14 @@ Configuration values are loaded from two sources, in order of precedence:
 1. Environment variables
 2. `.env` file
 
-The `.env` file will override environment variables if both are present. This allows users to set up their configuration in a way that works best for their workflow.
+The `.env` file will override environment variables if both are present. This
+allows users to set up their configuration in a way that works best for their
+workflow.
 
 ## Base Configuration
 
-The `BaseConfig` class in `mkplaylist/config/base.py` provides common functionality for all service-specific configurations:
+The `BaseConfig` class in `mkplaylist/config/base.py` provides common
+functionality for all service-specific configurations:
 
 - Loading environment variables and `.env` files
 - Type conversion methods (`get_env_int`, `get_env_bool`, `get_env_path`)
@@ -49,7 +55,8 @@ Each service has its own configuration class that extends `BaseConfig`:
 - `SpotifyConfig` in `spotify.py` for Spotify API credentials
 - `LastfmConfig` in `lastfm.py` for Last.fm API credentials
 
-These classes define service-specific configuration values, validation rules, and status methods.
+These classes define service-specific configuration values, validation rules,
+and status methods.
 
 ## Main Configuration
 
@@ -79,27 +86,27 @@ from mkplaylist.config.base import BaseConfig, ValidationRules, required
 class DeezerConfig(BaseConfig):
     def __init__(self):
         super().__init__()
-        
+
         # Load Deezer API credentials
         self.API_KEY = self.get_env('DEEZER_API_KEY', '')
         self.APP_ID = self.get_env('DEEZER_APP_ID', '')
         self.SECRET = self.get_env('DEEZER_SECRET', '')
-        
+
         # Define validation rules
         self.validation_rules: ValidationRules = {
             'API_KEY': [required],
             'APP_ID': [required],
             'SECRET': [required],
         }
-    
+
     def validate(self) -> Dict[str, str]:
         # Implementation similar to other service configs
         # ...
-    
+
     def status(self) -> Dict[str, bool]:
         # Implementation similar to other service configs
         # ...
-    
+
     def sources(self) -> Dict[str, str]:
         # Implementation similar to other service configs
         # ...
@@ -114,12 +121,12 @@ from mkplaylist.config.deezer import DeezerConfig
 class MkPlaylistConfig(BaseConfig):
     def __init__(self):
         super().__init__()
-        
+
         # Load service-specific configurations
         self.spotify = SpotifyConfig()
         self.lastfm = LastfmConfig()
         self.deezer = DeezerConfig()  # Add the new service
-        
+
         # ... rest of the implementation
 ```
 
@@ -240,6 +247,7 @@ Service-specific modules can define their own validation rules:
 To add a custom validation rule, define a function that takes a value and returns a tuple of `(bool, str)`:
 
 ```python
+```python
 def is_valid_email(value: str) -> Tuple[bool, str]:
     """Validate that a value is a valid email address."""
     if not value:
@@ -249,12 +257,17 @@ def is_valid_email(value: str) -> Tuple[bool, str]:
     return True, ""
 ```
 
+```
+
 Then add it to the validation rules for a configuration value:
 
+```python
 ```python
 self.validation_rules: ValidationRules = {
     'EMAIL': [required, is_valid_email],
 }
+```
+
 ```
 
 ### Applying Validation Rules
@@ -262,13 +275,139 @@ self.validation_rules: ValidationRules = {
 The `_validate_value` method applies a list of validation rules to a value:
 
 ```python
+```python
 errors = self._validate_value(value, rules)
+```
+
 ```
 
 The `_validate_with_rules` method applies a dictionary of validation rules to a dictionary of values:
 
 ```python
+```python
 issues = self._validate_with_rules(values, self.validation_rules)
+```
+
+### Validation Rule Design Pattern
+
+The configuration system uses a design pattern where validation rules are defined as standalone functions outside of the configuration classes. This approach offers several important benefits:
+
+#### 1. Separation of Concerns
+
+By defining validation rules as standalone functions outside of classes:
+
+- **Clear Responsibility**: Each validation rule has a single, well-defined responsibility
+- **Focused Logic**: Rules contain only validation logic, not configuration management
+- **Independent Testing**: Rules can be tested independently of the configuration classes
+- **Reduced Complexity**: Configuration classes focus on managing values, not validation details
+
+#### 2. Reusability and Composition
+
+Standalone validation rules enable powerful reuse patterns:
+
+- **Cross-Service Reuse**: Common rules like `required` or `exact_length` can be used across different service configurations
+- **Rule Composition**: Multiple rules can be combined to create complex validation logic
+- **Rule Factories**: Higher-order functions like `min_length` can generate specialized rules
+- **Mix and Match**: Different combinations of rules can be applied to different configuration values
+
+For example, the same `exact_length(32)` rule can be used for both Spotify Client IDs and Last.fm API Keys:
+
+```python
+# In spotify.py
+self.validation_rules = {
+    'CLIENT_ID': [required, exact_length(32), is_alphanumeric],
+    # ...
+}
+
+# In lastfm.py
+self.validation_rules = {
+    'API_KEY': [required, exact_length(32), is_hexadecimal],
+    # ...
+}
+```
+
+#### 3. Extensibility
+
+The pattern makes it easy to extend the validation system:
+
+- **Add New Rules**: New validation rules can be added without modifying existing classes
+- **Service-Specific Rules**: Each service can define its own specialized validation rules
+- **Third-Party Extensions**: External modules can provide additional validation rules
+- **Progressive Enhancement**: Validation can be enhanced over time without breaking changes
+
+#### 4. Declarative Configuration
+
+The approach enables a declarative style for defining validation requirements:
+
+```python
+self.validation_rules = {
+    'CLIENT_ID': [required, exact_length(32), is_alphanumeric],
+    'CLIENT_SECRET': [required, exact_length(32), is_alphanumeric],
+    'REDIRECT_URI': [required, is_url],
+}
+```
+
+This declarative style makes it immediately clear what validation requirements apply to each configuration value, improving code readability and maintainability.
+
+#### 5. Practical Examples
+
+Here are some examples of how this pattern enables powerful validation capabilities:
+
+**Example 1: Combining Multiple Rules**
+
+```python
+# Define validation rules for a configuration value
+self.validation_rules = {
+    'USERNAME': [
+        required,                                  # Must not be empty
+        min_length(3),                             # Must be at least 3 characters
+        max_length(20),                            # Must be at most 20 characters
+        pattern(r'^[a-zA-Z0-9_]+$', 'alphanumeric with underscores')  # Must match pattern
+    ],
+}
+```
+
+**Example 2: Creating Custom Rule Combinations**
+
+```python
+# Create a composite validation rule
+def is_valid_password(value: str) -> Tuple[bool, str]:
+    """Validate that a value is a valid password."""
+    # Apply multiple validation checks in sequence
+    for rule in [min_length(8), has_uppercase, has_lowercase, has_digit, has_special_char]:
+        is_valid, error = rule(value)
+        if not is_valid:
+            return False, error
+    return True, ""
+
+# Use the composite rule
+self.validation_rules = {
+    'PASSWORD': [required, is_valid_password],
+}
+```
+
+**Example 3: Conditional Validation**
+
+```python
+def requires_if(condition_fn, rule):
+    """Apply a validation rule only if a condition is met."""
+    def validator(value):
+        if condition_fn():
+            return rule(value)
+        return True, ""
+    return validator
+
+# Use conditional validation
+self.validation_rules = {
+    'API_KEY': [
+        requires_if(lambda: self.API_ENABLED, required),
+        requires_if(lambda: self.API_ENABLED, exact_length(32))
+    ],
+}
+```
+
+This design pattern creates a flexible, extensible validation system that can grow with the application's needs while maintaining clean, maintainable code.
+
 ```
 
 ## CLI Commands
