@@ -29,8 +29,9 @@ load_dotenv(override=True)
 # Base directory for application data
 def get_data_dir() -> Path:
   """Get the data directory for the application."""
+  # Change this function get the data dir first, then make the base_dir from
+  # Path( ... / 'mkplaylist', AI!
   if os.name == 'nt':                                      # Windows
-                                                           # Ignore pyrights warning about this code being  unreachable, AI!
     base_dir = Path(os.environ.get('APPDATA', '')) / 'mkplaylist'
   else:                                                    # Unix/Linux/Mac
     base_dir = Path(
