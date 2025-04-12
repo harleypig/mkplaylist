@@ -1,0 +1,397 @@
+# Database Schema
+
+This document provides detailed information about the database schema used in the mkplaylist application.
+
+## Overview
+
+mkplaylist uses SQLite as its database engine, with SQLAlchemy as the ORM (Object-Relational Mapping) layer. The database stores information about tracks, playlists, and listening history, combining data from both Spotify and Last.fm.
+
+## Database File
+
+By default, the database is stored in a file named `mkplaylist.db` in the user's data directory:
+
+- Linux: `~/.local/share/mkplaylist/mkplaylist.db`
+- macOS: `~/Library/Application Support/mkplaylist/mkplaylist.db`
+- Windows: `C:\Users\<username>\AppData\Local\mkplaylist\mkplaylist.db`
+
+This location can be overridden using the `MKPLAYLIST_DB_PATH` environment variable.
+
+## Schema Diagram
+
+```
+┌─────────────────────┐       ┌─────────────────────┐
+│ mkplaylist_tracks   │       │ mkplaylist_playlists│
+├─────────────────────┤       ├─────────────────────┤
+│ id (PK)             │       │ id (PK)             │
+│ spotify_id          │◄──┐   │ spotify_id          │
+│ name                │   │   │ name                │
+│ artist              │   │   │ description         │
+│ album               │   │   │ owner               │
+│ duration_ms         │   │   │ is_public           │
+│ popularity          │   │   │ created_at          │
+│ added_at            │   │   │ updated_at          │
+│ last_played_at      │   │   └─────────────────────┘
+│ play_count          │   │           ▲
+│ created_at          │   │           │
+│ updated_at          │   │           │
+└─────────────────────┘   │           │
+         ▲                │           │
+         │                │           │
+         │                │           │
+┌────────┴────────────┐   │   ┌──────┴────────────┐
+│mkplaylist_listening_│   │   │mkplaylist_playlist_│
+│     history         │   │   │      tracks        │
+├─────────────────────┤   │   ├─────────────────────┤
+│ id (PK)             │   │   │ id (PK)             │
+│ track_id (FK)       │───┘   │ playlist_id (FK)    │
+│ played_at           │       │ track_id (FK)       │───┘
+│ source              │       │ position            │
+│ created_at          │       │ added_at            │
+└─────────────────────┘       │ created_at          │
+                              └─────────────────────┘
+```
+
+## Table Definitions
+
+### mkplaylist_tracks
+
+Stores information about individual tracks.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| spotify_id | TEXT | Spotify track ID (unique) |
+| name | TEXT | Track name |
+| artist | TEXT | Artist name |
+| album | TEXT | Album name |
+| duration_ms | INTEGER | Track duration in milliseconds |
+| popularity | INTEGER | Spotify popularity score (0-100) |
+| added_at | TIMESTAMP | When the track was first added to the database |
+| last_played_at | TIMESTAMP | When the track was last played (from Last.fm) |
+| play_count | INTEGER | Number of times the track has been played (from Last.fm) |
+| created_at | TIMESTAMP | Record creation timestamp |
+| updated_at | TIMESTAMP | Record update timestamp |
+
+Indexes:
+- `idx_tracks_spotify_id` on `spotify_id`
+- `idx_tracks_name_artist` on `name` and `artist`
+- `idx_tracks_added_at` on `added_at`
+- `idx_tracks_last_played_at` on `last_played_at`
+
+### mkplaylist_playlists
+
+Stores information about playlists.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| spotify_id | TEXT | Spotify playlist ID (unique) |
+| name | TEXT | Playlist name |
+| description | TEXT | Playlist description |
+| owner | TEXT | Playlist owner (Spotify username) |
+| is_public | BOOLEAN | Whether the playlist is public |
+| created_at | TIMESTAMP | Record creation timestamp |
+| updated_at | TIMESTAMP | Record update timestamp |
+
+Indexes:
+- `idx_playlists_spotify_id` on `spotify_id`
+- `idx_playlists_name` on `name`
+
+### mkplaylist_playlist_tracks
+
+Junction table linking tracks to playlists.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| playlist_id | INTEGER | Foreign key to mkplaylist_playlists.id |
+| track_id | INTEGER | Foreign key to mkplaylist_tracks.id |
+| position | INTEGER | Position of the track in the playlist |
+| added_at | TIMESTAMP | When the track was added to the playlist |
+| created_at | TIMESTAMP | Record creation timestamp |
+
+Indexes:
+- `idx_playlist_tracks_playlist_id` on `playlist_id`
+- `idx_playlist_tracks_track_id` on `track_id`
+- `idx_playlist_tracks_added_at` on `added_at`
+- Unique constraint on `(playlist_id, track_id)` to prevent duplicates
+
+### mkplaylist_listening_history
+
+Stores information about when tracks were played.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key |
+| track_id | INTEGER | Foreign key to mkplaylist_tracks.id |
+| played_at | TIMESTAMP | When the track was played |
+| source | TEXT | Source of the play data (e.g., "lastfm") |
+| created_at | TIMESTAMP | Record creation timestamp |
+
+Indexes:
+- `idx_listening_history_track_id` on `track_id`
+- `idx_listening_history_played_at` on `played_at`
+
+## SQLAlchemy Models
+
+The database schema is implemented using SQLAlchemy ORM models in `mkplaylist/database/models.py`.
+
+### Base Model
+
+All models inherit from a common base class that provides common fields and functionality:
+
+```python
+class Base(DeclarativeBase):
+    """Base class for all models."""
+    
+    id = Column(Integer, primary_key=True)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+```
+
+### Track Model
+
+```python
+class Track(Base):
+    """Model representing a music track."""
+    
+    __tablename__ = "mkplaylist_tracks"
+    
+    spotify_id = Column(String, unique=True, index=True)
+    name = Column(String, nullable=False)
+    artist = Column(String, nullable=False)
+    album = Column(String)
+    duration_ms = Column(Integer)
+    popularity = Column(Integer)
+    added_at = Column(DateTime, default=datetime.utcnow, index=True)
+    last_played_at = Column(DateTime, index=True)
+    play_count = Column(Integer, default=0)
+    
+    # Relationships
+    playlists = relationship("Playlist", secondary="mkplaylist_playlist_tracks", back_populates="tracks")
+    listening_history = relationship("ListeningHistory", back_populates="track")
+```
+
+### Playlist Model
+
+```python
+class Playlist(Base):
+    """Model representing a playlist."""
+    
+    __tablename__ = "mkplaylist_playlists"
+    
+    spotify_id = Column(String, unique=True, index=True)
+    name = Column(String, nullable=False, index=True)
+    description = Column(String)
+    owner = Column(String)
+    is_public = Column(Boolean, default=False)
+    
+    # Relationships
+    tracks = relationship("Track", secondary="mkplaylist_playlist_tracks", back_populates="playlists")
+    playlist_tracks = relationship("PlaylistTrack", back_populates="playlist")
+```
+
+### PlaylistTrack Model
+
+```python
+class PlaylistTrack(Base):
+    """Junction model linking tracks to playlists."""
+    
+    __tablename__ = "mkplaylist_playlist_tracks"
+    
+    playlist_id = Column(Integer, ForeignKey("mkplaylist_playlists.id"), index=True)
+    track_id = Column(Integer, ForeignKey("mkplaylist_tracks.id"), index=True)
+    position = Column(Integer)
+    added_at = Column(DateTime, default=datetime.utcnow, index=True)
+    
+    # Relationships
+    playlist = relationship("Playlist", back_populates="playlist_tracks")
+    track = relationship("Track")
+    
+    # Constraints
+    __table_args__ = (
+        UniqueConstraint("playlist_id", "track_id", name="uq_playlist_track"),
+    )
+```
+
+### ListeningHistory Model
+
+```python
+class ListeningHistory(Base):
+    """Model representing a track play event."""
+    
+    __tablename__ = "mkplaylist_listening_history"
+    
+    track_id = Column(Integer, ForeignKey("mkplaylist_tracks.id"), index=True)
+    played_at = Column(DateTime, nullable=False, index=True)
+    source = Column(String, default="lastfm")
+    
+    # Relationships
+    track = relationship("Track", back_populates="listening_history")
+```
+
+## Database Operations
+
+The `DatabaseManager` class in `mkplaylist/database/db_manager.py` provides an interface for common database operations:
+
+```python
+class DatabaseManager:
+    """Manages database operations."""
+    
+    def __init__(self, db_path=None):
+        self.db_path = db_path or get_default_db_path()
+        self.engine = create_engine(f"sqlite:///{self.db_path}")
+        self.Session = sessionmaker(bind=self.engine)
+        
+    def create_tables(self):
+        """Create all tables if they don't exist."""
+        Base.metadata.create_all(self.engine)
+        
+    def get_session(self):
+        """Get a new database session."""
+        return self.Session()
+        
+    # Track operations
+    def add_track(self, track_data):
+        """Add a new track or update an existing one."""
+        
+    def get_track_by_spotify_id(self, spotify_id):
+        """Get a track by its Spotify ID."""
+        
+    def get_tracks_by_criteria(self, criteria):
+        """Get tracks matching the given criteria."""
+        
+    # Playlist operations
+    def add_playlist(self, playlist_data):
+        """Add a new playlist or update an existing one."""
+        
+    def get_playlist_by_spotify_id(self, spotify_id):
+        """Get a playlist by its Spotify ID."""
+        
+    def add_track_to_playlist(self, playlist_id, track_id, position=None):
+        """Add a track to a playlist."""
+        
+    # Listening history operations
+    def add_listening_event(self, track_id, played_at, source="lastfm"):
+        """Add a new listening event."""
+        
+    def get_recently_played_tracks(self, limit=10):
+        """Get the most recently played tracks."""
+```
+
+## Query Examples
+
+### Get Recently Added Tracks
+
+```python
+def get_recently_added_tracks(session, limit=10):
+    return session.query(Track).order_by(Track.added_at.desc()).limit(limit).all()
+```
+
+### Get Recently Played Tracks
+
+```python
+def get_recently_played_tracks(session, limit=10):
+    return session.query(Track).join(ListeningHistory).order_by(ListeningHistory.played_at.desc()).limit(limit).all()
+```
+
+### Get Most Played Tracks
+
+```python
+def get_most_played_tracks(session, limit=10):
+    return session.query(Track).order_by(Track.play_count.desc()).limit(limit).all()
+```
+
+### Get Tracks Added in the Last N Days
+
+```python
+def get_tracks_added_in_last_days(session, days=7, limit=None):
+    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    query = session.query(Track).filter(Track.added_at >= cutoff_date).order_by(Track.added_at.desc())
+    if limit:
+        query = query.limit(limit)
+    return query.all()
+```
+
+### Get Tracks Played in the Last N Days
+
+```python
+def get_tracks_played_in_last_days(session, days=7, limit=None):
+    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    query = session.query(Track).join(ListeningHistory).filter(ListeningHistory.played_at >= cutoff_date).order_by(ListeningHistory.played_at.desc())
+    if limit:
+        query = query.limit(limit)
+    return query.all()
+```
+
+## Database Migrations
+
+The application uses Alembic for database migrations. Migration scripts are stored in the `migrations/` directory.
+
+To create a new migration:
+
+```bash
+alembic revision --autogenerate -m "Description of changes"
+```
+
+To apply migrations:
+
+```bash
+alembic upgrade head
+```
+
+## Performance Considerations
+
+### Indexes
+
+Indexes are created on frequently queried columns to improve performance:
+- Primary keys are automatically indexed
+- Foreign keys are indexed for join operations
+- Timestamp fields used for filtering (added_at, played_at) are indexed
+- Fields used for lookups (spotify_id, name) are indexed
+
+### Query Optimization
+
+For optimal performance:
+- Use specific queries instead of loading all records
+- Use joins instead of separate queries when possible
+- Use pagination for large result sets
+- Consider using eager loading for relationships when appropriate
+
+### Database Maintenance
+
+Regular maintenance tasks:
+- Periodic VACUUM to reclaim space and optimize the database
+- Regular backups to prevent data loss
+- Consider using WAL (Write-Ahead Logging) mode for better concurrency
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Database Locked**
+   - Ensure only one process is writing to the database at a time
+   - Check for long-running transactions
+   - Consider using a timeout for database connections
+
+2. **Slow Queries**
+   - Check that appropriate indexes are in place
+   - Review query execution plans
+   - Consider denormalizing data for frequently accessed information
+
+3. **Data Inconsistencies**
+   - Use transactions for related operations
+   - Implement constraints to enforce data integrity
+   - Add validation at the application level
+
+### Debugging
+
+To enable SQLAlchemy query logging:
+
+```python
+import logging
+logging.basicConfig()
+logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
+```
+
+This will log all SQL queries to the console, which can be helpful for debugging.
