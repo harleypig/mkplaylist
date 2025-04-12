@@ -31,6 +31,7 @@ def get_data_dir() -> Path:
   """Get the data directory for the application."""
   if os.name == 'nt':
     # Windows
+    # type: ignore[unreachable-code]
     data_dir = Path(os.environ.get('APPDATA', ''))
   else:
     # Unix/Linux/Mac
