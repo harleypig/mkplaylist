@@ -31,7 +31,6 @@ def get_data_dir() -> Path:
   """Get the data directory for the application."""
   if os.name == 'nt':
     # Windows
-    # type: ignore[unreachable-code]
     data_dir = Path(os.environ.get('APPDATA', ''))
   else:
     # Unix/Linux/Mac
@@ -59,6 +58,8 @@ def get_config_dir() -> Path:
   Returns:
       Path: The configuration directory path
   """
+  # Refactor this code to get the config dir first, then append 'mkplaylist',
+  # AI!
   if os.name == 'nt':                            # Windows
     base_dir = Path(os.environ.get('APPDATA', '')) / 'mkplaylist' / 'config'
   else:                                          # Unix/Linux/Mac
