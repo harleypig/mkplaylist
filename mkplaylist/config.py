@@ -29,15 +29,16 @@ load_dotenv(override=True)
 # Base directory for application data
 def get_data_dir() -> Path:
   """Get the data directory for the application."""
-  if os.name == 'nt':                                      # Windows
-    # pyright: ignore[reportUnreachableCode]
+  if os.name == 'nt':
+    # Windows
     data_dir = Path(os.environ.get('APPDATA', ''))
-  else:                                                    # Unix/Linux/Mac
+  else:
+    # Unix/Linux/Mac
     data_dir = Path(
       os.environ.get('XDG_DATA_HOME',
                      Path.home() / '.local' / 'share')
     )
-    
+
   # Create the final path by appending the application name
   base_dir = data_dir / 'mkplaylist'
 
