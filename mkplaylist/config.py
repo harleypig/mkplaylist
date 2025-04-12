@@ -1,3 +1,4 @@
+
 """
 Configuration module for mkplaylist.
 
@@ -11,9 +12,15 @@ from typing import Optional, Dict, Any
 
 from dotenv import load_dotenv
 
-# Load environment variables from .env file if it exists
-load_dotenv()
+# Configuration precedence:
+# 1. Environment variables are loaded first as baseline configuration
+# 2. Values from .env file override environment variables if present
+#
+# First, get environment variables
+env_vars = {key: value for key, value in os.environ.items()}
 
+# Then load .env file which will override environment variables
+load_dotenv(override=True)
 
 # Base directory for application data
 def get_data_dir() -> Path:
@@ -41,6 +48,7 @@ def get_db_path() -> Path:
 
 
 # Spotify API credentials
+# These values will come from environment variables first, then be overridden by .env if present
 SPOTIFY_CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID', '')
 SPOTIFY_CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET', '')
 SPOTIFY_REDIRECT_URI = os.environ.get(
@@ -48,11 +56,13 @@ SPOTIFY_REDIRECT_URI = os.environ.get(
 )
 
 # Last.fm API credentials
+# These values will come from environment variables first, then be overridden by .env if present
 LASTFM_API_KEY = os.environ.get('LASTFM_API_KEY', '')
 LASTFM_API_SECRET = os.environ.get('LASTFM_API_SECRET', '')
 LASTFM_USERNAME = os.environ.get('LASTFM_USERNAME', '')
 
 # Application settings
+# These values will come from environment variables first, then be overridden by .env if present
 DEFAULT_SYNC_DAYS = int(os.environ.get('MKPLAYLIST_DEFAULT_SYNC_DAYS', '30'))
 LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO').upper()
 
@@ -94,3 +104,58 @@ def get_config_status() -> Dict[str, bool]:
     'database_path_set': 'MKPLAYLIST_DB_PATH' in os.environ,
     'lastfm_username_set': bool(LASTFM_USERNAME),
   }
+
+
+def get_config_sources() -> Dict[str, str]:
+  """
+  Get information about where each configuration value is coming from.
+  
+  This helps users understand the configuration precedence:
+  1. Environment variables are loaded first as baseline configuration
+  2. Values from .env file override environment variables if present
+  
+  Returns:
+      A dictionary with configuration items and their sources.
+  """
+  # Check if .env file exists
+  dotenv_path = Path('.env')
+  dotenv_exists = dotenv_path.exists()
+  
+  # Get original environment variables (before .env was loaded)
+  original_env = env_vars
+  
+  # Check source for each configuration value
+  sources = {}
+  
+  # Helper function to determine source
+  def get_source(key: str, env_var_name: str) -> str:
+    if not dotenv_exists:
+      return "Environment variable" if env_var_name in original_env else "Default value"
+    
+    # If .env exists, check if value changed after loading .env
+    if env_var_name in original_env:
+      current_value = os.environ.get(env_var_name)
+      original_value = original_env.get(env_var_name)
+      
+      if current_value != original_value:
+        return ".env file (overriding environment variable)"
+      return "Environment variable"
+    
+    if env_var_name in os.environ:
+      return ".env file"
+    
+    return "Default value"
+  
+  # Check sources for all configuration values
+  sources['SPOTIFY_CLIENT_ID'] = get_source('SPOTIFY_CLIENT_ID', 'SPOTIFY_CLIENT_ID')
+  sources['SPOTIFY_CLIENT_SECRET'] = get_source('SPOTIFY_CLIENT_SECRET', 'SPOTIFY_CLIENT_SECRET')
+  sources['SPOTIFY_REDIRECT_URI'] = get_source('SPOTIFY_REDIRECT_URI', 'SPOTIFY_REDIRECT_URI')
+  sources['LASTFM_API_KEY'] = get_source('LASTFM_API_KEY', 'LASTFM_API_KEY')
+  sources['LASTFM_API_SECRET'] = get_source('LASTFM_API_SECRET', 'LASTFM_API_SECRET')
+  sources['LASTFM_USERNAME'] = get_source('LASTFM_USERNAME', 'LASTFM_USERNAME')
+  sources['MKPLAYLIST_DB_PATH'] = get_source('MKPLAYLIST_DB_PATH', 'MKPLAYLIST_DB_PATH')
+  sources['MKPLAYLIST_DEFAULT_SYNC_DAYS'] = get_source('DEFAULT_SYNC_DAYS', 'MKPLAYLIST_DEFAULT_SYNC_DAYS')
+  sources['LOG_LEVEL'] = get_source('LOG_LEVEL', 'LOG_LEVEL')
+  
+  return sources
+

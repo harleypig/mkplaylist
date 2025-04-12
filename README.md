@@ -1,0 +1,178 @@
+# mkplaylist
+
+A Python tool to create Spotify playlists based on custom criteria using Last.fm data.
+
+## Overview
+
+mkplaylist integrates with Spotify and Last.fm APIs to create and manage playlists based on flexible, user-defined criteria. The application allows you to:
+
+- Sync data from Spotify playlists to a local SQLite database
+- Fetch listening history from Last.fm and match it to tracks
+- Create or update Spotify playlists based on natural language-like criteria
+
+The primary goal is to combine data from both services to create dynamic playlists that can be based on criteria like "recently added songs" and "last played songs".
+
+## Features
+
+- **Data Synchronization**: Periodically sync Spotify playlists and Last.fm listening history to a local database
+- **Custom Playlist Generation**: Create playlists using natural language-like criteria
+- **Command-line Interface**: Simple CLI for managing playlists and data synchronization
+- **Flexible Criteria**: Combine multiple criteria like "recently added", "last played", and "most played"
+
+## Installation
+
+### Prerequisites
+
+Before installing mkplaylist, ensure you have:
+
+1. **Python 3.7+** - The application requires Python 3.7 or newer
+2. **Spotify Account** - You'll need a Spotify account to access playlists
+3. **Last.fm Account** - You'll need a Last.fm account to access listening history
+4. **API Credentials** - You'll need to register for API access with both services
+
+### Using pipx (Recommended)
+
+The recommended way to install mkplaylist is using [pipx](https://pypa.github.io/pipx/), which installs the package in an isolated environment while making the command available in your PATH:
+
+```bash
+# Install pipx if you don't have it
+python -m pip install --user pipx
+python -m pipx ensurepath
+
+# Install mkplaylist directly from the GitHub repository
+pipx install git+https://github.com/harleypig/mkplaylist.git
+```
+
+### Using pip
+
+If you prefer, you can also install mkplaylist using pip directly from the GitHub repository:
+
+```bash
+pip install git+https://github.com/harleypig/mkplaylist.git
+```
+
+### Installing from Source
+
+For development or if you want to make modifications:
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/harleypig/mkplaylist.git
+   cd mkplaylist
+   ```
+
+2. Install the package in development mode:
+   ```bash
+   pip install -e .
+   ```
+
+## Configuration
+
+After installation, you'll need to configure mkplaylist with your API credentials:
+
+1. Create a `.env` file in your working directory:
+   ```
+   SPOTIFY_CLIENT_ID=your_spotify_client_id
+   SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+   SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
+   LASTFM_API_KEY=your_lastfm_api_key
+   LASTFM_API_SECRET=your_lastfm_shared_secret
+   ```
+
+2. Replace the placeholder values with your actual API credentials
+
+### Configuration Precedence
+
+mkplaylist supports two methods for configuration:
+
+1. **Environment Variables**: You can set configuration values directly as environment variables
+2. **`.env` File**: You can create a `.env` file in your working directory
+
+The configuration system follows this precedence order:
+
+1. Environment variables are loaded first as baseline configuration
+2. Values from `.env` file override environment variables if present
+
+## Basic Usage
+
+### Syncing Data
+
+Before creating playlists, you need to sync your data from Spotify and Last.fm:
+
+```bash
+# Sync both Spotify and Last.fm data
+mkplaylist sync
+
+# Sync only Spotify data
+mkplaylist sync --spotify-only
+
+# Sync only Last.fm data
+mkplaylist sync --lastfm-only
+
+# Sync the last 7 days of listening history
+mkplaylist sync --days 7
+```
+
+### Creating Playlists
+
+Create playlists using natural language-like criteria:
+
+```bash
+# Create a playlist with recently added and played tracks
+mkplaylist create "Recent Favorites" "10 most recently added songs and 10 last played songs"
+
+# Create a public playlist with a custom description
+mkplaylist create "Weekly Discoveries" "20 most recently added songs" --public --description "My weekly discoveries"
+
+# Replace all tracks in an existing playlist
+mkplaylist create "Daily Mix" "5 last played songs" --replace
+
+# Limit the number of tracks
+mkplaylist create "Top Tracks" "most played songs" --limit 50
+```
+
+### Listing Playlists
+
+List all playlists that have been created or updated by mkplaylist:
+
+```bash
+mkplaylist list
+```
+
+## Criteria Syntax
+
+The `create` command uses a custom criteria syntax to specify which tracks to include in a playlist. Here are some examples:
+
+- `"10 most recently added songs"` - The 10 most recently added tracks
+- `"5 last played songs"` - The 5 most recently played tracks
+- `"20 most played songs"` - The 20 most frequently played tracks
+- `"songs by The Beatles"` - Tracks by a specific artist
+- `"songs from Abbey Road"` - Tracks from a specific album
+- `"songs in rock"` - Tracks in a specific genre
+- `"songs added in the last 7 days"` - Tracks added within the specified time period
+- `"songs played in the last 30 days"` - Tracks played within the specified time period
+
+These patterns can be combined using `and` to create more complex criteria:
+
+```
+"10 most recently added songs and 5 last played songs"
+"songs by The Beatles and songs from Abbey Road"
+"5 most played songs and songs played in the last 7 days"
+```
+
+## Documentation
+
+For more detailed information, please refer to the documentation in the `docs/` directory:
+
+- [User Documentation](docs/user/) - Installation, getting started, commands, and examples
+- [Developer Documentation](docs/dev/) - Architecture, API integration, database schema, and contributing
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+Before contributing, please read the [Contributing Guide](docs/dev/contributing.md) for guidelines on how to make a contribution.

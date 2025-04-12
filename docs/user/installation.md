@@ -97,6 +97,7 @@ credentials:
 
 1. Create a `.env` file in your working directory (or copy the provided `.env.example`):
    ```
+   ```
    SPOTIFY_CLIENT_ID=your_spotify_client_id
    SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
    SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
@@ -104,7 +105,82 @@ credentials:
    LASTFM_API_SECRET=your_lastfm_shared_secret
    ```
 
+   ```
+
 2. Replace the placeholder values with your actual API credentials
+
+### Configuration Precedence
+
+mkplaylist supports two methods for configuration:
+
+1. **Environment Variables**: You can set configuration values directly as environment variables
+2. **`.env` File**: You can create a `.env` file in your working directory
+
+The configuration system follows this precedence order:
+
+1. Environment variables are loaded first as baseline configuration
+2. Values from `.env` file override environment variables if present
+
+This approach gives you flexibility in how you configure the application:
+
+#### Using Environment Variables Only
+
+You can set environment variables directly in your shell:
+
+```bash
+export SPOTIFY_CLIENT_ID=your_spotify_client_id
+export SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+export SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
+export LASTFM_API_KEY=your_lastfm_api_key
+export LASTFM_API_SECRET=your_lastfm_shared_secret
+mkplaylist --version
+```
+
+#### Using .env File Only
+
+Create a `.env` file in your working directory with your configuration:
+
+```
+SPOTIFY_CLIENT_ID=your_spotify_client_id
+SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
+SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
+LASTFM_API_KEY=your_lastfm_api_key
+LASTFM_API_SECRET=your_lastfm_shared_secret
+```
+
+Then run mkplaylist normally:
+
+```bash
+mkplaylist --version
+```
+
+#### Using Both Methods
+
+You can set some values as environment variables and others in the `.env` file. If the same value is set in both places, the `.env` file value takes precedence.
+
+For example, with these environment variables:
+
+```bash
+export SPOTIFY_CLIENT_ID=env_spotify_client_id
+export SPOTIFY_CLIENT_SECRET=env_spotify_client_secret
+```
+
+And this `.env` file:
+
+```
+SPOTIFY_CLIENT_ID=dotenv_spotify_client_id
+LASTFM_API_KEY=dotenv_lastfm_api_key
+```
+
+The resulting configuration would be:
+- `SPOTIFY_CLIENT_ID`: `dotenv_spotify_client_id` (from `.env` file)
+- `SPOTIFY_CLIENT_SECRET`: `env_spotify_client_secret` (from environment)
+- `LASTFM_API_KEY`: `dotenv_lastfm_api_key` (from `.env` file)
+
+This flexibility allows you to:
+- Use environment variables for CI/CD pipelines
+- Use `.env` file for local development
+- Override specific values as needed
 
 ## Verifying Installation
 
