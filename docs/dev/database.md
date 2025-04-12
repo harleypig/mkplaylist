@@ -154,6 +154,7 @@ def get_state_dir() -> Path:
 Returns the path to the SQLite database file, with support for a custom path via environment variable.
 
 ```python
+```python
 def get_db_path() -> Path:
     """Get the path to the SQLite database file."""
     # Check for custom path in environment variable
@@ -168,6 +169,28 @@ def get_db_path() -> Path:
     
     
     return default_path
+```
+
+### Technical Note on XDG Environment Variables
+
+The directory functions (`get_data_dir()`, `get_config_dir()`, `get_cache_dir()`, and `get_state_dir()`) access environment variables directly using `os.environ.get()`. This has important implications for how configuration values are loaded and applied:
+
+1. **Timing of Environment Variable Access**: These functions read environment variables at the time they are called, not when the module is imported.
+
+2. **`.env` File Interaction**: While the application uses `python-dotenv` to load variables from a `.env` file with `load_dotenv(override=True)`, there's a timing consideration:
+   - If directory functions are called during module imports (before `load_dotenv()` is executed), they will use the original environment variables, not those from the `.env` file.
+   - If directory functions are called after `load_dotenv()` has executed, they will use the environment variables as overridden by the `.env` file.
+
+3. **Precedence Order**:
+   - System environment variables provide the baseline configuration
+   - Values from the `.env` file override these environment variables when loaded
+   - For XDG directory settings specifically, this means that values in the `.env` file will take precedence, but only if the directory functions are called after the `.env` file is loaded
+
+4. **Recommended Approach for Extensions**:
+   - If you're extending the codebase and need reliable access to these directories, ensure that your code runs after the configuration module has been fully initialized.
+   - For the most predictable behavior, access these directories through the provided functions rather than directly using environment variables.
+   - If you need to customize XDG paths, setting environment variables before the application starts is the most reliable method, though `.env` file settings will work in most cases.
+
 ```
 
 ### File Locations
