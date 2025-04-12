@@ -1,12 +1,14 @@
 from setuptools import setup, find_packages
 
+
 setup(
   name="mkplaylist",
   version="0.1.0",
-  description=
-  "Create Spotify playlists based on custom criteria using Last.fm data",
-  author="Your Name",
-  author_email="your.email@example.com",
+  description="Create Spotify playlists based on custom criteria using Last.fm data",
+  author="harleypig",
+  author_email="harleypig@gmail.com",
+  url="https://github.com/harleypig/mkplaylist",
+    
   packages=find_packages(),
   include_package_data=True,
   install_requires=[
@@ -42,3 +44,4 @@ setup(
     "Topic :: Multimedia :: Sound/Audio",
   ],
 )
+

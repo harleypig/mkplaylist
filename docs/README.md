@@ -1,3 +1,4 @@
+
 # mkplaylist Documentation
 
 This directory contains documentation for the mkplaylist application.
@@ -59,7 +60,7 @@ mkplaylist list                                  # List available playlists
 The main project structure is organized as follows:
 
 ```
-mkplaylist/
+harleypig/mkplaylist/
 ├── mkplaylist/            # Main package code
 │   ├── __init__.py        # Package initialization
 │   ├── config.py          # Configuration and API credentials

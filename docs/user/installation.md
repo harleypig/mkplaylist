@@ -46,15 +46,19 @@ pip install mkplaylist
 If you prefer to install from source:
 
 1. Clone the repository:
+
    ```bash
-   git clone https://github.com/yourusername/mkplaylist.git
+   git clone https://github.com/harleypig/mkplaylist.git
    cd mkplaylist
    ```
+    
 
 2. Install the package in development mode:
+
    ```bash
    pip install -e .
    ```
+    
 
 ## Configuration
 
@@ -104,3 +108,4 @@ Guide](getting_started.md) to learn how to use the application.
 
 If you encounter any other issues, please check the project's GitHub
 repository for known issues or to report a new one.
+
