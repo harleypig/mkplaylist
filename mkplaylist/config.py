@@ -84,6 +84,8 @@ def get_cache_dir() -> Path:
   Returns:
       Path: The cache directory path
   """
+  # Refactor this function get the cache dir first and then append
+  # 'mkplaylist', AI!
   if os.name == 'nt':                            # Windows
     base_dir = Path(
       os.environ.get('LOCALAPPDATA', '')
