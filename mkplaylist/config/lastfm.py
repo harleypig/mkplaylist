@@ -9,8 +9,8 @@ and validation.
 import logging
 import re
 from typing import Dict, Any, List, Tuple
+from mkplaylist.config.base import ServiceConfig, ValidationRules, required, exact_length, pattern
 
-from mkplaylist.config.base import BaseConfig, ValidationRules, required, exact_length, pattern
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -47,14 +47,24 @@ def is_valid_username(value: str) -> Tuple[bool, str]:
     if not re.match(r'^[a-zA-Z0-9_-]+$', value):
         return False, "Last.fm username must contain only alphanumeric characters, underscores, and hyphens"
     return True, ""
-class LastfmConfig(BaseConfig):
+
+class LastfmConfig(ServiceConfig):
     """
     Last.fm configuration class for mkplaylist.
-
+    
     This class handles loading Last.fm-specific configuration from environment
     variables, managing API credentials, and providing validation.
     """
-
+    @property
+    def service_name(self) -> str:
+        """
+        Get the name of the service.
+        
+        Returns:
+            str: The name of the service ('lastfm')
+        """
+        return 'lastfm'
+    
     def __init__(self):
         """
         Initialize the Last.fm configuration.
@@ -144,7 +154,8 @@ class LastfmConfig(BaseConfig):
 
         Returns:
             Dict[str, str]: A dictionary with configuration items as keys and their sources as string values.
-                        Possible sources: "Environment variable", ".env file",
+
+    
                         ".env file (overriding environment variable)", or "Default value".
         """
         return {
@@ -152,3 +163,5 @@ class LastfmConfig(BaseConfig):
             'LASTFM_API_SECRET': self.source('LASTFM_API_SECRET'),
             'LASTFM_USERNAME': self.source('LASTFM_USERNAME'),
         }
+
+

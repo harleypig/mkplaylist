@@ -10,7 +10,7 @@ import logging
 import re
 from typing import Dict, Any, List, Tuple
 
-from mkplaylist.config.base import BaseConfig, ValidationRules, required, exact_length, pattern, is_url
+from mkplaylist.config.base import ServiceConfig, ValidationRules, required, exact_length, pattern, is_url
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -44,18 +44,28 @@ def is_valid_redirect_uri(value: str) -> Tuple[bool, str]:
         return False, "Spotify Redirect URI must start with http:// or https://"
     return True, ""
 
-class SpotifyConfig(BaseConfig):
+class SpotifyConfig(ServiceConfig):
     """
     Spotify configuration class for mkplaylist.
 
     This class handles loading Spotify-specific configuration from environment
     variables, managing API credentials, and providing validation.
     """
+    
+    @property
+    def service_name(self) -> str:
+        """
+        Get the name of the service.
+        
+        Returns:
+            str: The name of the service ('spotify')
+        """
+        return 'spotify'
 
     def __init__(self):
         """
         Initialize the Spotify configuration.
-
+        
         Loads environment variables and initializes configuration attributes
         for Spotify API credentials.
         """
@@ -78,9 +88,9 @@ class SpotifyConfig(BaseConfig):
     def validate(self) -> Dict[str, str]:
         """
         Validate the Spotify configuration and return any issues.
-
+        
         Checks that required API credentials are set and properly formatted.
-
+        
         Returns:
             Dict[str, str]: A dictionary of configuration issues, with keys as issue identifiers
                             and values as error messages. Empty if all is valid.
@@ -112,10 +122,10 @@ class SpotifyConfig(BaseConfig):
     def status(self) -> Dict[str, bool]:
         """
         Get the status of Spotify configuration items.
-
+        
         Provides a quick overview of which Spotify configuration components
         are properly set up.
-
+        
         Returns:
             Dict[str, bool]: A dictionary with configuration items as keys and their status as boolean values.
                              True indicates the item is properly configured.
@@ -134,10 +144,10 @@ class SpotifyConfig(BaseConfig):
     def sources(self) -> Dict[str, str]:
         """
         Get information about where each Spotify configuration value is coming from.
-
+        
         Helps users understand the configuration precedence by identifying whether each value
         comes from environment variables, .env file, or default values.
-
+        
         Returns:
             Dict[str, str]: A dictionary with configuration items as keys and their sources as string values.
                             Possible sources: "Environment variable", ".env file",
