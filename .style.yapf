@@ -1,4 +1,3 @@
-
 [style]
 # Use PEP8 style as the base
 based_on_style = pep8
@@ -32,4 +31,3 @@ split_penalty_after_opening_bracket = 0
 split_penalty_after_unary_operator = 10000
 split_penalty_for_added_line_split = 30
 split_penalty_excess_character = 7000
-

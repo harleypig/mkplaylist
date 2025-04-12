@@ -1,4 +1,3 @@
-
 # Existing entries
 venv/**
 .plandex-v2/projects-v2.json
@@ -60,4 +59,3 @@ venv.bak/
 mkplaylist.db
 *.db-journal
 spotify_token.json
-
