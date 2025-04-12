@@ -84,17 +84,15 @@ def get_cache_dir() -> Path:
   Returns:
       Path: The cache directory path
   """
-  # Refactor this function get the cache dir first and then append
-  # 'mkplaylist', AI!
   if os.name == 'nt':                            # Windows
-    base_dir = Path(
-      os.environ.get('LOCALAPPDATA', '')
-    ) / 'mkplaylist' / 'cache'
+    cache_dir = Path(os.environ.get('LOCALAPPDATA', ''))
+    base_dir = cache_dir / 'mkplaylist' / 'cache'
   else:                                          # Unix/Linux/Mac
-    base_dir = Path(
+    cache_dir = Path(
       os.environ.get('XDG_CACHE_HOME',
                      Path.home() / '.cache')
-    ) / 'mkplaylist'
+    )
+    base_dir = cache_dir / 'mkplaylist'
 
   # Create directory if it doesn't exist
   base_dir.mkdir(parents=True, exist_ok=True)
