@@ -127,7 +127,6 @@ def get_state_dir() -> Path:
 # Database path
 def get_db_path() -> Path:
   """Get the path to the SQLite database file."""
-  # Remove migration related code from this function, AI!
   # Check for custom path in environment variable
   custom_path = os.environ.get('MKPLAYLIST_DB_PATH')
   if custom_path:
@@ -135,26 +134,6 @@ def get_db_path() -> Path:
 
   # Default path in data directory
   default_path = get_data_dir() / 'mkplaylist.db'
-
-  # Check for database in old location (current directory)
-  old_path = Path('mkplaylist.db')
-  if old_path.exists() and not default_path.exists():
-    try:
-      # Create data directory if it doesn't exist (should be created by get_data_dir)
-      data_dir = get_data_dir()
-      data_dir.mkdir(parents=True, exist_ok=True)
-
-      # Copy the database file to the new location
-      import shutil
-      shutil.copy2(old_path, default_path)
-      logger.info(f"Migrated database from {old_path} to {default_path}")
-
-      # Optionally remove the old database file
-      # Uncomment the following line to remove the old database file after migration
-      # old_path.unlink()
-    except Exception as e:
-      logger.warning(f"Failed to migrate database: {e}")
-
   return default_path
 
 
