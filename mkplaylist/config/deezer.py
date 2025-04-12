@@ -3,14 +3,12 @@ Deezer configuration module for mkplaylist.
 
 This module provides Deezer-specific configuration, including API credentials
 and validation.
-"""
-
 import logging
 import re
 from typing import Dict, Any, List, Tuple
 
 from mkplaylist.config.base import ServiceConfig, ValidationRules, required, exact_length, pattern, is_url
-
+"""
 # Set up logging
 logger = logging.getLogger(__name__)
 
@@ -172,3 +170,4 @@ class DeezerConfig(ServiceConfig):
             'DEEZER_ACCESS_TOKEN': self.source('DEEZER_ACCESS_TOKEN'),
             'DEEZER_REDIRECT_URI': self.source('DEEZER_REDIRECT_URI'),
         }
+

@@ -141,6 +141,14 @@ def is_directory(value: Path) -> Tuple[bool, str]:
 
 
 def one_of(options: List[Any]) -> ValidationRule:
+    """Create a validator that checks if a value is one of the given options."""
+    def validator(value: Any) -> Tuple[bool, str]:
+        if value not in options:
+            return False, f"Value must be one of: {', '.join(str(o) for o in options)}"
+        return True, ""
+    return validator
+
+
   """Create a validator that checks if a value is one of the given options."""
 
   def validator(value: Any) -> Tuple[bool, str]:
@@ -156,6 +164,38 @@ class ServiceConfig(BaseConfig):
     
     This class defines the interface that all service configurations must implement.
     It extends BaseConfig to inherit common configuration functionality.
+    
+    Service configurations are automatically discovered and loaded by the main
+    configuration class. To create a new service configuration, create a new module
+    in the mkplaylist/config directory that defines a class extending ServiceConfig.
+    
+    Example:
+        ```python
+        # mkplaylist/config/myservice.py
+        from mkplaylist.config.base import ServiceConfig
+        
+        class MyServiceConfig(ServiceConfig):
+            @property
+            def service_name(self) -> str:
+                return 'myservice'
+                
+            def __init__(self):
+                super().__init__()
+                self.API_KEY = self.get_env('MYSERVICE_API_KEY', '')
+                # ...
+                
+            def validate(self) -> Dict[str, str]:
+                # Implement validation
+                # ...
+                
+            def status(self) -> Dict[str, bool]:
+                # Implement status
+                # ...
+                
+            def sources(self) -> Dict[str, str]:
+                # Implement sources
+                # ...
+        ```
     """
     
     @property
@@ -164,9 +204,13 @@ class ServiceConfig(BaseConfig):
         Get the name of the service.
         
         This property must be overridden by subclasses to provide the service name.
+        The service name should be lowercase and match the module name.
         
         Returns:
             str: The name of the service (e.g., 'spotify', 'lastfm')
+        
+        Raises:
+            NotImplementedError: If the subclass does not override this property
         """
         raise NotImplementedError("Service configurations must define a service_name property")
     
@@ -175,6 +219,7 @@ class ServiceConfig(BaseConfig):
         Validate the service configuration and return any issues.
         
         This method must be implemented by subclasses to provide service-specific validation.
+        It should check that all required configuration values are set and properly formatted.
         
         Returns:
             Dict[str, str]: A dictionary of configuration issues, with keys as issue identifiers
@@ -187,6 +232,7 @@ class ServiceConfig(BaseConfig):
         Get the status of service configuration items.
         
         This method must be implemented by subclasses to provide service-specific status information.
+        It should provide a quick overview of which configuration components are properly set up.
         
         Returns:
             Dict[str, bool]: A dictionary with configuration items as keys and their status as boolean values.
@@ -199,6 +245,7 @@ class ServiceConfig(BaseConfig):
         Get information about where each service configuration value is coming from.
         
         This method must be implemented by subclasses to provide service-specific source information.
+        It helps users understand the configuration precedence.
         
         Returns:
             Dict[str, str]: A dictionary with configuration items as keys and their sources as string values.
@@ -206,6 +253,7 @@ class ServiceConfig(BaseConfig):
                             ".env file (overriding environment variable)", or "Default value".
         """
         return {}
+
 
 class BaseConfig:
 
