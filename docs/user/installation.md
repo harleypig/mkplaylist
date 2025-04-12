@@ -245,7 +245,10 @@ You can override the default locations by setting the appropriate environment va
 
 5. **Database Path** (directly override the database location):
    ```bash
+   ```bash
    export MKPLAYLIST_DB_PATH=/path/to/custom/database.db
+   ```
+
    ```
 
 #### Migration from Previous Versions

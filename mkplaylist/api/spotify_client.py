@@ -57,34 +57,18 @@ class SpotifyClient:
         'user-library-read'
       )
 
-    # Check for token in the old location (data directory)
-    old_token_path = f"{config.get_data_dir()}/spotify_token.json"
-    new_token_path = f"{config.get_state_dir()}/spotify_token.json"
-    
-    # Migrate token from old location to new location if needed
-    if os.path.exists(old_token_path) and not os.path.exists(new_token_path):
-      try:
-        # Create state directory if it doesn't exist (should be created by get_state_dir)
-        os.makedirs(os.path.dirname(new_token_path), exist_ok=True)
-        
-        # Copy the token file to the new location
-        import shutil
-        shutil.copy2(old_token_path, new_token_path)
-        logger.info(f"Migrated Spotify token from {old_token_path} to {new_token_path}")
-        
-        # Optionally remove the old token file
-        # Uncomment the following line to remove the old token file after migration
-        # os.remove(old_token_path)
-      except Exception as e:
-        logger.warning(f"Failed to migrate Spotify token: {e}")
+
+    # Use the state directory for token storage
+    token_path = f"{config.get_state_dir()}/spotify_token.json"
     
     auth_manager = SpotifyOAuth(
       client_id=self.client_id,
       client_secret=self.client_secret,
       redirect_uri=self.redirect_uri,
       scope=scope,
-      cache_path=new_token_path
+      cache_path=token_path
     )
+    
 
     self.sp = spotipy.Spotify(auth_manager=auth_manager)
     logger.info("Authenticated with Spotify API")
@@ -332,3 +316,4 @@ class SpotifyClient:
         time.sleep(1)
 
     return tracks
+

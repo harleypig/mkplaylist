@@ -164,20 +164,8 @@ def get_db_path() -> Path:
     # Default path in data directory
     default_path = get_data_dir() / 'mkplaylist.db'
     
-    # Check for database in old location (current directory)
-    old_path = Path('mkplaylist.db')
-    if old_path.exists() and not default_path.exists():
-        try:
-            # Create data directory if it doesn't exist
-            data_dir = get_data_dir()
-            data_dir.mkdir(parents=True, exist_ok=True)
-            
-            # Copy the database file to the new location
-            import shutil
-            shutil.copy2(old_path, default_path)
-            logger.info(f"Migrated database from {old_path} to {default_path}")
-        except Exception as e:
-            logger.warning(f"Failed to migrate database: {e}")
+
+    
     
     return default_path
 ```
@@ -692,3 +680,4 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 This will log all SQL queries to the console, which can be helpful for
 debugging.
+
