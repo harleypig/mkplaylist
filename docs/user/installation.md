@@ -115,7 +115,6 @@ This approach gives you flexibility in how you configure the application:
 You can set environment variables directly in your shell:
 
 ```bash
-```bash
 export SPOTIFY_CLIENT_ID=your_spotify_client_id
 export SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 export SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
@@ -124,13 +123,10 @@ export LASTFM_API_SECRET=your_lastfm_shared_secret
 mkplaylist --version
 ```
 
-```
-
 #### Using .env File Only
 
 Create a `.env` file in your working directory with your configuration:
 
-```
 ```
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
@@ -139,39 +135,30 @@ LASTFM_API_KEY=your_lastfm_api_key
 LASTFM_API_SECRET=your_lastfm_shared_secret
 ```
 
-```
-
 Then run mkplaylist normally:
 
-```bash
 ```bash
 mkplaylist --version
 ```
 
-```
-
 #### Using Both Methods
 
-You can set some values as environment variables and others in the `.env` file. If the same value is set in both places, the `.env` file value takes precedence.
+You can set some values as environment variables and others in the `.env`
+file. If the same value is set in both places, the `.env` file value takes
+precedence.
 
 For example, with these environment variables:
 
-```bash
 ```bash
 export SPOTIFY_CLIENT_ID=env_spotify_client_id
 export SPOTIFY_CLIENT_SECRET=env_spotify_client_secret
 ```
 
-```
-
 And this `.env` file:
 
 ```
-```
 SPOTIFY_CLIENT_ID=dotenv_spotify_client_id
 LASTFM_API_KEY=dotenv_lastfm_api_key
-```
-
 ```
 
 The resulting configuration would be:
@@ -186,7 +173,9 @@ This flexibility allows you to:
 
 ### File Locations
 
-mkplaylist follows the XDG Base Directory Specification for storing its files, which provides a standardized way to organize application files across different operating systems.
+mkplaylist follows the XDG Base Directory Specification for storing its files,
+which provides a standardized way to organize application files across
+different operating systems.
 
 #### Directory Structure
 
@@ -245,10 +234,7 @@ You can override the default locations by setting the appropriate environment va
 
 5. **Database Path** (directly override the database location):
    ```bash
-   ```bash
    export MKPLAYLIST_DB_PATH=/path/to/custom/database.db
-   ```
-
    ```
 
 #### Migration from Previous Versions
@@ -316,4 +302,5 @@ Guide](getting_started.md) to learn how to use the application.
    - Check your internet connection
    - If behind a firewall, ensure you have access to GitHub
 
-If you encounter any other issues, please check the project's GitHub repository for known issues or to report a new one.
+If you encounter any other issues, please check the project's GitHub
+repository for known issues or to report a new one.
