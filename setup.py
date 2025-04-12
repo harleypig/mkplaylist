@@ -1,13 +1,27 @@
-from setuptools import setup, find_packages
 
+from setuptools import setup, find_packages
+import os
+
+# Read the long description from README.md if it exists
+long_description = ""
+if os.path.exists("README.md"):
+    with open("README.md", "r", encoding="utf-8") as fh:
+        long_description = fh.read()
 
 setup(
   name="mkplaylist",
   version="0.1.0",
   description="Create Spotify playlists based on custom criteria using Last.fm data",
+  long_description=long_description,
+  long_description_content_type="text/markdown",
   author="harleypig",
   author_email="harleypig@gmail.com",
   url="https://github.com/harleypig/mkplaylist",
+  project_urls={
+      "Bug Tracker": "https://github.com/harleypig/mkplaylist/issues",
+      "Documentation": "https://github.com/harleypig/mkplaylist/tree/main/docs",
+      "Source Code": "https://github.com/harleypig/mkplaylist",
+  },
     
   packages=find_packages(),
   include_package_data=True,

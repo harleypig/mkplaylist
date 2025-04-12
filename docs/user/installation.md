@@ -33,12 +33,33 @@ Before installing mkplaylist, ensure you have the following:
 
 ## Installation Methods
 
-### Using pip (Recommended)
+### Using pipx (Recommended)
 
-The simplest way to install mkplaylist is using pip:
+The recommended way to install mkplaylist is using [pipx](https://pypa.github.io/pipx/), which installs the package in an isolated environment while making the command available in your PATH:
+
+```bash
+# Install pipx if you don't have it
+python -m pip install --user pipx
+python -m pipx ensurepath
+
+# Install mkplaylist
+pipx install mkplaylist
+```
+
+Using pipx provides several benefits:
+- Isolates dependencies to avoid conflicts with other packages
+- Makes the command available globally without affecting your system Python
+- Simplifies updates and uninstallation
+- Manages virtual environments automatically
+
+### Using pip
+
+If you prefer, you can also install mkplaylist using pip:
 
 ```bash
 pip install mkplaylist
+```
+
 ```
 
 ### Installing from Source
@@ -81,10 +102,21 @@ credentials:
 To verify that mkplaylist is installed correctly, run:
 
 ```bash
+```bash
 mkplaylist --version
 ```
 
+```
+
 You should see the version number of the installed package.
+
+If you installed with pipx, you can also verify the installation with:
+
+```bash
+pipx list
+```
+
+This will show all applications installed with pipx, including mkplaylist.
 
 ## Next Steps
 
@@ -96,7 +128,8 @@ Guide](getting_started.md) to learn how to use the application.
 ### Common Issues
 
 1. **"Command not found" error**
-   - Ensure that Python's bin directory is in your PATH
+   - If installed with pipx: Run `pipx ensurepath` and restart your terminal
+   - If installed with pip: Ensure that Python's bin directory is in your PATH
    - Try using `python -m mkplaylist` instead
 
 2. **Authentication errors**
@@ -104,8 +137,14 @@ Guide](getting_started.md) to learn how to use the application.
    - Ensure your Spotify redirect URI matches what you registered
 
 3. **Package dependencies issues**
-   - Try reinstalling with `pip install --upgrade --force-reinstall mkplaylist`
+   - If installed with pipx: Try reinstalling with `pipx uninstall mkplaylist && pipx install mkplaylist`
+   - If installed with pip: Try reinstalling with `pip install --upgrade --force-reinstall mkplaylist`
 
-If you encounter any other issues, please check the project's GitHub
-repository for known issues or to report a new one.
+4. **pipx installation issues**
+   - Make sure you have Python 3.7+ installed
+   - Try running `python -m pip install --user --upgrade pipx`
+   - On some systems, you may need to log out and log back in after running `pipx ensurepath`
+
+If you encounter any other issues, please check the project's GitHub repository for known issues or to report a new one.
+
 
