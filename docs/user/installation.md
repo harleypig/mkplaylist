@@ -115,6 +115,7 @@ This approach gives you flexibility in how you configure the application:
 You can set environment variables directly in your shell:
 
 ```bash
+```bash
 export SPOTIFY_CLIENT_ID=your_spotify_client_id
 export SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
 export SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
@@ -123,10 +124,13 @@ export LASTFM_API_SECRET=your_lastfm_shared_secret
 mkplaylist --version
 ```
 
+```
+
 #### Using .env File Only
 
 Create a `.env` file in your working directory with your configuration:
 
+```
 ```
 SPOTIFY_CLIENT_ID=your_spotify_client_id
 SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
@@ -135,10 +139,15 @@ LASTFM_API_KEY=your_lastfm_api_key
 LASTFM_API_SECRET=your_lastfm_shared_secret
 ```
 
+```
+
 Then run mkplaylist normally:
 
 ```bash
+```bash
 mkplaylist --version
+```
+
 ```
 
 #### Using Both Methods
@@ -148,15 +157,21 @@ You can set some values as environment variables and others in the `.env` file. 
 For example, with these environment variables:
 
 ```bash
+```bash
 export SPOTIFY_CLIENT_ID=env_spotify_client_id
 export SPOTIFY_CLIENT_SECRET=env_spotify_client_secret
+```
+
 ```
 
 And this `.env` file:
 
 ```
+```
 SPOTIFY_CLIENT_ID=dotenv_spotify_client_id
 LASTFM_API_KEY=dotenv_lastfm_api_key
+```
+
 ```
 
 The resulting configuration would be:
@@ -168,6 +183,79 @@ This flexibility allows you to:
 - Use environment variables for CI/CD pipelines
 - Use `.env` file for local development
 - Override specific values as needed
+
+### File Locations
+
+mkplaylist follows the XDG Base Directory Specification for storing its files, which provides a standardized way to organize application files across different operating systems.
+
+#### Directory Structure
+
+The application uses the following directory structure:
+
+1. **Data Directory**: For persistent application data (database)
+   - Linux: `$XDG_DATA_HOME/mkplaylist` (defaults to `~/.local/share/mkplaylist`)
+   - macOS: `$XDG_DATA_HOME/mkplaylist` (defaults to `~/Library/Application Support/mkplaylist`)
+   - Windows: `%APPDATA%\mkplaylist`
+
+2. **Config Directory**: For configuration files
+   - Linux: `$XDG_CONFIG_HOME/mkplaylist` (defaults to `~/.config/mkplaylist`)
+   - macOS: `$XDG_CONFIG_HOME/mkplaylist` (defaults to `~/Library/Preferences/mkplaylist`)
+   - Windows: `%APPDATA%\mkplaylist\config`
+
+3. **Cache Directory**: For non-essential data that can be regenerated
+   - Linux: `$XDG_CACHE_HOME/mkplaylist` (defaults to `~/.cache/mkplaylist`)
+   - macOS: `$XDG_CACHE_HOME/mkplaylist` (defaults to `~/Library/Caches/mkplaylist`)
+   - Windows: `%LOCALAPPDATA%\mkplaylist\cache`
+
+4. **State Directory**: For persistent application state (authentication tokens)
+   - Linux: `$XDG_STATE_HOME/mkplaylist` (defaults to `~/.local/state/mkplaylist`)
+   - macOS: `$XDG_STATE_HOME/mkplaylist` (defaults to `~/Library/State/mkplaylist`)
+   - Windows: `%LOCALAPPDATA%\mkplaylist\state`
+
+#### Specific File Locations
+
+Important files are stored in the following locations:
+
+- **Database**: `<data_dir>/mkplaylist.db`
+- **Spotify Token**: `<state_dir>/spotify_token.json`
+
+#### Overriding Default Locations
+
+You can override the default locations by setting the appropriate environment variables:
+
+1. **Data Directory**:
+   ```bash
+   export XDG_DATA_HOME=/path/to/custom/data
+   ```
+
+2. **Config Directory**:
+   ```bash
+   export XDG_CONFIG_HOME=/path/to/custom/config
+   ```
+
+3. **Cache Directory**:
+   ```bash
+   export XDG_CACHE_HOME=/path/to/custom/cache
+   ```
+
+4. **State Directory**:
+   ```bash
+   export XDG_STATE_HOME=/path/to/custom/state
+   ```
+
+5. **Database Path** (directly override the database location):
+   ```bash
+   export MKPLAYLIST_DB_PATH=/path/to/custom/database.db
+   ```
+
+#### Migration from Previous Versions
+
+If you're upgrading from a previous version of mkplaylist, the application will automatically migrate your data:
+
+- Existing database files in the current directory will be copied to the new data directory
+- Existing Spotify tokens will be copied to the new state directory
+
+The original files will be preserved during migration to ensure no data is lost.
 
 ## Verifying Installation
 

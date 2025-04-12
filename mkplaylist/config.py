@@ -7,10 +7,14 @@ managing API credentials, and providing application settings.
 """
 
 import os
+import logging
 from pathlib import Path
 from typing import Optional, Dict, Any
 
 from dotenv import load_dotenv
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 # Configuration precedence:
 # 1. Environment variables are loaded first as baseline configuration
@@ -37,14 +41,111 @@ def get_data_dir() -> Path:
   base_dir.mkdir(parents=True, exist_ok=True)
   return base_dir
 
+def get_config_dir() -> Path:
+  """
+  Get the configuration directory for the application.
+  
+  Following XDG Base Directory Specification:
+  - On Unix/Linux/Mac: $XDG_CONFIG_HOME/mkplaylist (~/.config/mkplaylist by default)
+  - On Windows: %APPDATA%\mkplaylist\config
+  
+  Returns:
+      Path: The configuration directory path
+  """
+  if os.name == 'nt':                                      # Windows
+    base_dir = Path(os.environ.get('APPDATA', '')) / 'mkplaylist' / 'config'
+  else:                                                    # Unix/Linux/Mac
+    base_dir = Path(
+      os.environ.get('XDG_CONFIG_HOME',
+                     Path.home() / '.config')
+    ) / 'mkplaylist'
+  
+  # Create directory if it doesn't exist
+  base_dir.mkdir(parents=True, exist_ok=True)
+  return base_dir
+
+def get_cache_dir() -> Path:
+  """
+  Get the cache directory for the application.
+  
+  Following XDG Base Directory Specification:
+  - On Unix/Linux/Mac: $XDG_CACHE_HOME/mkplaylist (~/.cache/mkplaylist by default)
+  - On Windows: %LOCALAPPDATA%\mkplaylist\cache
+  
+  Returns:
+      Path: The cache directory path
+  """
+  if os.name == 'nt':                                      # Windows
+    base_dir = Path(os.environ.get('LOCALAPPDATA', '')) / 'mkplaylist' / 'cache'
+  else:                                                    # Unix/Linux/Mac
+    base_dir = Path(
+      os.environ.get('XDG_CACHE_HOME',
+                     Path.home() / '.cache')
+    ) / 'mkplaylist'
+  
+  # Create directory if it doesn't exist
+  base_dir.mkdir(parents=True, exist_ok=True)
+  return base_dir
+
+def get_state_dir() -> Path:
+  """
+  Get the state directory for the application.
+  
+  Following XDG Base Directory Specification:
+  - On Unix/Linux/Mac: $XDG_STATE_HOME/mkplaylist (~/.local/state/mkplaylist by default)
+  - On Windows: %LOCALAPPDATA%\mkplaylist\state
+  
+  This directory is used for persistent application state data like authentication tokens.
+  
+  Returns:
+      Path: The state directory path
+  """
+  if os.name == 'nt':                                      # Windows
+    base_dir = Path(os.environ.get('LOCALAPPDATA', '')) / 'mkplaylist' / 'state'
+  else:                                                    # Unix/Linux/Mac
+    base_dir = Path(
+      os.environ.get('XDG_STATE_HOME',
+                     Path.home() / '.local' / 'state')
+    ) / 'mkplaylist'
+  
+  # Create directory if it doesn't exist
+  base_dir.mkdir(parents=True, exist_ok=True)
+  return base_dir
+
+
 
 # Database path
 def get_db_path() -> Path:
   """Get the path to the SQLite database file."""
+  # Check for custom path in environment variable
   custom_path = os.environ.get('MKPLAYLIST_DB_PATH')
   if custom_path:
     return Path(custom_path)
-  return get_data_dir() / 'mkplaylist.db'
+  
+  # Default path in data directory
+  default_path = get_data_dir() / 'mkplaylist.db'
+  
+  # Check for database in old location (current directory)
+  old_path = Path('mkplaylist.db')
+  if old_path.exists() and not default_path.exists():
+    try:
+      # Create data directory if it doesn't exist (should be created by get_data_dir)
+      data_dir = get_data_dir()
+      data_dir.mkdir(parents=True, exist_ok=True)
+      
+      # Copy the database file to the new location
+      import shutil
+      shutil.copy2(old_path, default_path)
+      logger.info(f"Migrated database from {old_path} to {default_path}")
+      
+      # Optionally remove the old database file
+      # Uncomment the following line to remove the old database file after migration
+      # old_path.unlink()
+    except Exception as e:
+      logger.warning(f"Failed to migrate database: {e}")
+  
+  return default_path
+    
 
 
 # Spotify API credentials
@@ -158,4 +259,5 @@ def get_config_sources() -> Dict[str, str]:
   sources['LOG_LEVEL'] = get_source('LOG_LEVEL', 'LOG_LEVEL')
   
   return sources
+
 

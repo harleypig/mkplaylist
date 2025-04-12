@@ -12,12 +12,298 @@ Last.fm.
 
 ## Database File
 
+By default, the database is stored in a file named `mkplaylist.db` in the user's data directory:
+
 By default, the database is stored in a file named `mkplaylist.db` in the
 user's data directory:
 
 - Linux: `~/.local/share/mkplaylist/mkplaylist.db`
 - macOS: `~/Library/Application Support/mkplaylist/mkplaylist.db`
 - Windows: `C:\Users\<username>\AppData\Local\mkplaylist\mkplaylist.db`
+
+This location can be overridden using the `MKPLAYLIST_DB_PATH` environment variable.
+
+## Directory Structure
+
+mkplaylist follows the XDG Base Directory Specification for organizing its files across different operating systems. This provides a standardized way to store application data, configuration, cache, and state files.
+
+### XDG Base Directory Specification
+
+The XDG Base Directory Specification defines several environment variables that determine where applications should store different types of files:
+
+- `XDG_DATA_HOME`: For user-specific data files (~/.local/share/ by default on Linux)
+- `XDG_CONFIG_HOME`: For user-specific configuration files (~/.config/ by default on Linux)
+- `XDG_CACHE_HOME`: For non-essential data files (~/.cache/ by default on Linux)
+- `XDG_STATE_HOME`: For user-specific state data (~/.local/state/ by default on Linux)
+
+### Directory Functions
+
+The application provides several functions in `mkplaylist/config.py` to handle directory paths according to the XDG specification:
+
+#### `get_data_dir()`
+
+Returns the path to the data directory for storing persistent application data like the database.
+
+```python
+def get_data_dir() -> Path:
+    """Get the data directory for the application."""
+    if os.name == 'nt':  # Windows
+        base_dir = Path(os.environ.get('APPDATA', '')) / 'mkplaylist'
+    else:  # Unix/Linux/Mac
+        base_dir = Path(
+            os.environ.get('XDG_DATA_HOME',
+                           Path.home() / '.local' / 'share')
+        ) / 'mkplaylist'
+    
+    # Create directory if it doesn't exist
+    base_dir.mkdir(parents=True, exist_ok=True)
+    return base_dir
+```
+
+#### `get_config_dir()`
+
+Returns the path to the configuration directory for storing application settings.
+
+```python
+def get_config_dir() -> Path:
+    """
+    Get the configuration directory for the application.
+    
+    Following XDG Base Directory Specification:
+    - On Unix/Linux/Mac: $XDG_CONFIG_HOME/mkplaylist (~/.config/mkplaylist by default)
+    - On Windows: %APPDATA%\mkplaylist\config
+    
+    Returns:
+        Path: The configuration directory path
+    """
+    if os.name == 'nt':  # Windows
+        base_dir = Path(os.environ.get('APPDATA', '')) / 'mkplaylist' / 'config'
+    else:  # Unix/Linux/Mac
+        base_dir = Path(
+            os.environ.get('XDG_CONFIG_HOME',
+                           Path.home() / '.config')
+        ) / 'mkplaylist'
+    
+    # Create directory if it doesn't exist
+    base_dir.mkdir(parents=True, exist_ok=True)
+    return base_dir
+```
+
+#### `get_cache_dir()`
+
+Returns the path to the cache directory for storing non-essential data that can be regenerated.
+
+```python
+def get_cache_dir() -> Path:
+    """
+    Get the cache directory for the application.
+    
+    Following XDG Base Directory Specification:
+    - On Unix/Linux/Mac: $XDG_CACHE_HOME/mkplaylist (~/.cache/mkplaylist by default)
+    - On Windows: %LOCALAPPDATA%\mkplaylist\cache
+    
+    Returns:
+        Path: The cache directory path
+    """
+    if os.name == 'nt':  # Windows
+        base_dir = Path(os.environ.get('LOCALAPPDATA', '')) / 'mkplaylist' / 'cache'
+    else:  # Unix/Linux/Mac
+        base_dir = Path(
+            os.environ.get('XDG_CACHE_HOME',
+                           Path.home() / '.cache')
+        ) / 'mkplaylist'
+    
+    # Create directory if it doesn't exist
+    base_dir.mkdir(parents=True, exist_ok=True)
+    return base_dir
+```
+
+#### `get_state_dir()`
+
+Returns the path to the state directory for storing persistent application state data like authentication tokens.
+
+```python
+def get_state_dir() -> Path:
+    """
+    Get the state directory for the application.
+    
+    Following XDG Base Directory Specification:
+    - On Unix/Linux/Mac: $XDG_STATE_HOME/mkplaylist (~/.local/state/mkplaylist by default)
+    - On Windows: %LOCALAPPDATA%\mkplaylist\state
+    
+    This directory is used for persistent application state data like authentication tokens.
+    
+    Returns:
+        Path: The state directory path
+    """
+    if os.name == 'nt':  # Windows
+        base_dir = Path(os.environ.get('LOCALAPPDATA', '')) / 'mkplaylist' / 'state'
+    else:  # Unix/Linux/Mac
+        base_dir = Path(
+            os.environ.get('XDG_STATE_HOME',
+                           Path.home() / '.local' / 'state')
+        ) / 'mkplaylist'
+    
+    # Create directory if it doesn't exist
+    base_dir.mkdir(parents=True, exist_ok=True)
+    return base_dir
+```
+
+#### `get_db_path()`
+
+Returns the path to the SQLite database file, with support for a custom path via environment variable.
+
+```python
+def get_db_path() -> Path:
+    """Get the path to the SQLite database file."""
+    # Check for custom path in environment variable
+    custom_path = os.environ.get('MKPLAYLIST_DB_PATH')
+    if custom_path:
+        return Path(custom_path)
+    
+    # Default path in data directory
+    default_path = get_data_dir() / 'mkplaylist.db'
+    
+    # Check for database in old location (current directory)
+    old_path = Path('mkplaylist.db')
+    if old_path.exists() and not default_path.exists():
+        try:
+            # Create data directory if it doesn't exist
+            data_dir = get_data_dir()
+            data_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Copy the database file to the new location
+            import shutil
+            shutil.copy2(old_path, default_path)
+            logger.info(f"Migrated database from {old_path} to {default_path}")
+        except Exception as e:
+            logger.warning(f"Failed to migrate database: {e}")
+    
+    return default_path
+```
+
+### File Locations
+
+The application uses these directory functions to determine where to store different types of files:
+
+| File Type | Function | Default Location (Linux) | Environment Variable |
+|-----------|----------|--------------------------|----------------------|
+| Database | `get_db_path()` | ~/.local/share/mkplaylist/mkplaylist.db | MKPLAYLIST_DB_PATH |
+| Spotify Token | N/A (uses state dir) | ~/.local/state/mkplaylist/spotify_token.json | XDG_STATE_HOME |
+| Configuration | N/A (future use) | ~/.config/mkplaylist/ | XDG_CONFIG_HOME |
+| Cache | N/A (future use) | ~/.cache/mkplaylist/ | XDG_CACHE_HOME |
+
+### Migration Strategy
+
+The application includes migration logic to handle existing files in old locations:
+
+1. **Database Migration**: If a database file exists in the current directory but not in the new XDG-compliant location, it will be copied to the new location.
+
+2. **Spotify Token Migration**: If a Spotify token file exists in the old location (data directory) but not in the new location (state directory), it will be copied to the new location.
+
+This migration strategy ensures a smooth transition for users upgrading from previous versions while maintaining backward compatibility.
+
+### Usage Examples
+
+Here are examples of how to use the directory functions in your code:
+
+#### Getting the Database Path
+
+```python
+from mkplaylist import config
+
+# Get the database path
+db_path = config.get_db_path()
+print(f"Database path: {db_path}")
+
+# Use the path with SQLAlchemy
+from sqlalchemy import create_engine
+engine = create_engine(f"sqlite:///{db_path}")
+```
+
+#### Storing Configuration Files
+
+```python
+from mkplaylist import config
+import json
+
+# Get the configuration directory
+config_dir = config.get_config_dir()
+config_file = config_dir / "settings.json"
+
+# Save configuration
+settings = {"theme": "dark", "sync_interval": 3600}
+with open(config_file, "w") as f:
+    json.dump(settings, f)
+
+# Load configuration
+if config_file.exists():
+    with open(config_file, "r") as f:
+        settings = json.load(f)
+```
+
+#### Caching API Responses
+
+```python
+from mkplaylist import config
+import json
+import hashlib
+import time
+
+def get_cached_response(url, max_age=3600):
+    # Get the cache directory
+    cache_dir = config.get_cache_dir()
+    
+    # Create a cache key from the URL
+    url_hash = hashlib.md5(url.encode()).hexdigest()
+    cache_file = cache_dir / f"{url_hash}.json"
+    
+    # Check if cache exists and is fresh
+    if cache_file.exists():
+        with open(cache_file, "r") as f:
+            cached_data = json.load(f)
+        
+        # Check if cache is still valid
+        if time.time() - cached_data["timestamp"] < max_age:
+            return cached_data["data"]
+    
+    # Cache miss or expired, fetch new data
+    data = fetch_from_api(url)  # Implement this function
+    
+    # Save to cache
+    with open(cache_file, "w") as f:
+        json.dump({"timestamp": time.time(), "data": data}, f)
+    
+    return data
+```
+
+#### Storing Authentication State
+
+```python
+from mkplaylist import config
+import json
+
+def save_auth_token(token_data):
+    # Get the state directory
+    state_dir = config.get_state_dir()
+    token_file = state_dir / "auth_token.json"
+    
+    # Save token data
+    with open(token_file, "w") as f:
+        json.dump(token_data, f)
+
+def load_auth_token():
+    # Get the state directory
+    state_dir = config.get_state_dir()
+    token_file = state_dir / "auth_token.json"
+    
+    # Load token data if it exists
+    if token_file.exists():
+        with open(token_file, "r") as f:
+            return json.load(f)
+    
+    return None
+```
 
 This location can be overridden using the `MKPLAYLIST_DB_PATH` environment
 variable.
