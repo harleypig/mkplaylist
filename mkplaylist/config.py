@@ -109,17 +109,15 @@ def get_state_dir() -> Path:
   Returns:
       Path: The state directory path
   """
-  # Refactor this function get the state dir first, then append 'mkplaylist',
-  # AI!
   if os.name == 'nt':                                      # Windows
-    base_dir = Path(
-      os.environ.get('LOCALAPPDATA', '')
-    ) / 'mkplaylist' / 'state'
+    state_dir = Path(os.environ.get('LOCALAPPDATA', ''))
+    base_dir = state_dir / 'mkplaylist' / 'state'
   else:                                                    # Unix/Linux/Mac
-    base_dir = Path(
+    state_dir = Path(
       os.environ.get('XDG_STATE_HOME',
                      Path.home() / '.local' / 'state')
-    ) / 'mkplaylist'
+    )
+    base_dir = state_dir / 'mkplaylist'
 
   # Create directory if it doesn't exist
   base_dir.mkdir(parents=True, exist_ok=True)
