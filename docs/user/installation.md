@@ -237,15 +237,6 @@ You can override the default locations by setting the appropriate environment va
    export MKPLAYLIST_DB_PATH=/path/to/custom/database.db
    ```
 
-#### Migration from Previous Versions
-
-If you're upgrading from a previous version of mkplaylist, the application will automatically migrate your data:
-
-- Existing database files in the current directory will be copied to the new data directory
-- Existing Spotify tokens will be copied to the new state directory
-
-The original files will be preserved during migration to ensure no data is lost.
-
 ## Verifying Installation
 
 To verify that mkplaylist is installed correctly, run:
