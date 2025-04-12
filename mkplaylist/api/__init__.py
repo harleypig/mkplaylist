@@ -1,4 +1,3 @@
-
 """
 API package for mkplaylist.
 
@@ -9,7 +8,6 @@ from mkplaylist.api.spotify_client import SpotifyClient
 from mkplaylist.api.lastfm_client import LastFmClient
 
 __all__ = [
-    'SpotifyClient',
-    'LastFmClient',
+  'SpotifyClient',
+  'LastFmClient',
 ]
-

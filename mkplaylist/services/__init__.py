@@ -1,4 +1,3 @@
-
 """
 Services package for mkplaylist.
 
@@ -11,8 +10,7 @@ from mkplaylist.services.playlist_service import PlaylistService
 from mkplaylist.services.query_parser import QueryParser
 
 __all__ = [
-    'SyncService',
-    'PlaylistService',
-    'QueryParser',
+  'SyncService',
+  'PlaylistService',
+  'QueryParser',
 ]
-

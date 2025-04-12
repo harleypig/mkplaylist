@@ -1,4 +1,3 @@
-
 """
 Database package for mkplaylist.
 
@@ -10,11 +9,10 @@ from mkplaylist.database.models import Base, Track, Playlist, PlaylistTrack, Lis
 from mkplaylist.database.db_manager import DatabaseManager
 
 __all__ = [
-    'Base',
-    'Track',
-    'Playlist',
-    'PlaylistTrack',
-    'ListeningHistory',
-    'DatabaseManager',
+  'Base',
+  'Track',
+  'Playlist',
+  'PlaylistTrack',
+  'ListeningHistory',
+  'DatabaseManager',
 ]
-
