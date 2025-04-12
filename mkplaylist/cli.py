@@ -12,12 +12,9 @@ from typing import Optional, List
 import click
 
 from mkplaylist import __version__
-from mkplaylist.config import MkPlaylistConfig
-
-from mkplaylist import config
-
+from mkplaylist.config import MkPlaylistConfig, config, validate, status, sources, data_dir, config_dir, cache_dir, state_dir, db_path
+     
 # Set up logging
-config = MkPlaylistConfig()
 logging.basicConfig(
   level=getattr(logging, config.LOG_LEVEL),
   format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -34,9 +31,10 @@ def cli():
     This tool allows you to sync data from Spotify and Last.fm, and then
     create playlists based on criteria like "recently added" and "last played".
     """
+  
   # Check configuration
-  issues = config.validate_config()
   issues = config.validate()
+  if issues:
     click.echo("Configuration issues detected:")
     for key, message in issues.items():
       click.echo(f"  - {message}")
@@ -45,6 +43,132 @@ def cli():
     )
     click.echo("See the documentation for more information.")
     sys.exit(1)
+    
+
+@cli.group()
+def config_cmd():
+  """
+  View and validate configuration settings.
+  
+  This command group provides tools to check the status of your configuration
+  and validate that all required settings are properly configured.
+  """
+  pass
+
+
+
+@config_cmd.command()
+
+@click.option(
+  '--format',
+  type=click.Choice(['text', 'json']),
+  default='text',
+  help='Output format (default: text)'
+)
+def status(format):
+  """
+  Show the current configuration status.
+  
+  Displays which configuration items are properly set up and where each
+  configuration value is coming from (environment variable, .env file, or default).
+  """
+  status_dict = config.status()
+  sources_dict = config.sources()
+  
+  if format == 'json':
+    import json
+    result = {
+      'status': status_dict,
+      'sources': sources_dict
+    }
+    click.echo(json.dumps(result, indent=2))
+  else:
+    # Text format
+    click.echo("Configuration Status:")
+    click.echo("=====================")
+    
+    # Group by service
+    services = {
+      'spotify': [],
+      'lastfm': [],
+      'general': []
+    }
+    
+    for key, value in status_dict.items():
+      if key.startswith('spotify_'):
+        services['spotify'].append((key[8:], value))  # Remove 'spotify_' prefix
+      elif key.startswith('lastfm_'):
+        services['lastfm'].append((key[7:], value))  # Remove 'lastfm_' prefix
+      else:
+        services['general'].append((key, value))
+    
+    # Print status by service
+    for service, items in services.items():
+      if items:
+        click.echo(f"\n{service.capitalize()}:")
+        for key, value in items:
+          status_symbol = "✓" if value else "✗"
+          status_color = "green" if value else "red"
+          click.secho(f"  {status_symbol} {key.replace('_', ' ').capitalize()}", fg=status_color)
+    
+    # Print sources
+    click.echo("\nConfiguration Sources:")
+    click.echo("=====================")
+    for key, source in sources_dict.items():
+      click.echo(f"  {key}: {source}")
+    
+    # Print paths
+    click.echo("\nConfiguration Paths:")
+    click.echo("==================")
+    click.echo(f"  Data directory: {config.data_dir()}")
+    click.echo(f"  Config directory: {config.config_dir()}")
+    click.echo(f"  Cache directory: {config.cache_dir()}")
+    click.echo(f"  State directory: {config.state_dir()}")
+    click.echo(f"  Database path: {config.db_path()}")
+
+
+
+@config_cmd.command()
+    
+@click.option(
+  '--format',
+  type=click.Choice(['text', 'json']),
+  default='text',
+  help='Output format (default: text)'
+)
+def validate(format):
+  """
+  Validate the configuration and show any issues.
+  
+  Checks that all required configuration values are set and properly formatted.
+  """
+
+  # Check configuration
+  issues = config.validate()
+    
+  
+  if format == 'json':
+    import json
+    result = {
+      'valid': len(issues) == 0,
+      'issues': issues
+    }
+    click.echo(json.dumps(result, indent=2))
+  else:
+    # Text format
+    if not issues:
+      click.secho("Configuration is valid! ✓", fg="green")
+    else:
+      click.secho("Configuration issues found:", fg="red")
+      for key, message in issues.items():
+        click.echo(f"  ✗ {key}: {message}")
+      
+      click.echo("\nTo fix these issues:")
+      click.echo("  1. Set the required environment variables, or")
+      click.echo("  2. Create a .env file with the required values")
+      click.echo("\nSee the documentation for more information.")
+  
+
 
 
 @cli.command()
@@ -178,4 +302,6 @@ def main():
 
 if __name__ == '__main__':
   main()
+
+
 
