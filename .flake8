@@ -1,0 +1,35 @@
+[flake8]
+# Match the indentation and line length from YAPF
+indent-size = 2
+max-line-length = 79
+
+# Ignore some errors that conflict with the YAPF style
+# E203: whitespace before ':' (conflicts with black/yapf)
+# E231: missing whitespace after ',', ';', or ':'
+# W503: line break before binary operator (conflicts with modern Python style)
+# E501: line too long (handled by max-line-length)
+ignore = E203,E231,W503,E501
+
+# Exclude common directories
+exclude =
+    .git,
+    __pycache__,
+    build,
+    dist,
+    *.egg-info,
+    venv,
+    .venv,
+    .env
+
+# Complexity settings
+max-complexity = 10
+
+# Additional plugins (optional)
+# You can uncomment these if you have them installed
+# plugins =
+#     flake8-docstrings
+#     flake8-import-order
+#     flake8-bugbear
+
+# Import order settings (if using flake8-import-order)
+# import-order-style = google
