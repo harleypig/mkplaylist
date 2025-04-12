@@ -1,3 +1,4 @@
+
 """
 Command-line interface for mkplaylist.
 
@@ -11,9 +12,12 @@ from typing import Optional, List
 import click
 
 from mkplaylist import __version__
+from mkplaylist.config import MkPlaylistConfig
+
 from mkplaylist import config
 
 # Set up logging
+config = MkPlaylistConfig()
 logging.basicConfig(
   level=getattr(logging, config.LOG_LEVEL),
   format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -60,6 +64,7 @@ def cli():
   help=f'Number of days of history to sync (default: {config.DEFAULT_SYNC_DAYS})'
 )
 def sync(spotify_only: bool, lastfm_only: bool, full: bool, days: int):
+
   """
     Synchronize data from Spotify and Last.fm to the local database.
     """

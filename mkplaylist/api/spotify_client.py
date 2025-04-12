@@ -14,6 +14,8 @@ import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 from spotipy.exceptions import SpotifyException
 
+from mkplaylist.config import MkPlaylistConfig
+
 from mkplaylist import config
 
 logger = logging.getLogger(__name__)
@@ -37,9 +39,12 @@ class SpotifyClient:
             client_secret: Spotify client secret (defaults to config)
             redirect_uri: Redirect URI for OAuth (defaults to config)
         """
-    self.client_id = client_id or config.SPOTIFY_CLIENT_ID
-    self.client_secret = client_secret or config.SPOTIFY_CLIENT_SECRET
-    self.redirect_uri = redirect_uri or config.SPOTIFY_REDIRECT_URI
+
+    self.config = MkPlaylistConfig()
+    self.client_id = client_id or self.config.SPOTIFY_CLIENT_ID
+    self.client_secret = client_secret or self.config.SPOTIFY_CLIENT_SECRET
+    self.redirect_uri = redirect_uri or self.config.SPOTIFY_REDIRECT_URI
+    
     self.sp = None
 
   def authenticate(self, scope: Optional[str] = None) -> None:
@@ -59,7 +64,7 @@ class SpotifyClient:
 
 
     # Use the state directory for token storage
-    token_path = f"{config.get_state_dir()}/spotify_token.json"
+    token_path = f"{self.config.get_state_dir()}/spotify_token.json"
     
     auth_manager = SpotifyOAuth(
       client_id=self.client_id,
@@ -156,6 +161,8 @@ class SpotifyClient:
         results = None
 
     return tracks
+
+
 
   def create_playlist(
     self,
