@@ -127,6 +127,7 @@ def get_state_dir() -> Path:
 # Database path
 def get_db_path() -> Path:
   """Get the path to the SQLite database file."""
+  # Remove migration related code from this function, AI!
   # Check for custom path in environment variable
   custom_path = os.environ.get('MKPLAYLIST_DB_PATH')
   if custom_path:
