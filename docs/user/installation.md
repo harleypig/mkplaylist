@@ -234,18 +234,18 @@ You can override the default locations by setting the appropriate environment va
 
 5. **Database Path** (directly override the database location):
    ```bash
-   ```bash
    export MKPLAYLIST_DB_PATH=/path/to/custom/database.db
    ```
 
-> **Note**: XDG directory settings can also be specified in your `.env` file alongside other configuration values. For example:
+> **Note**: XDG directory settings can also be specified in your `.env` file
+> alongside other configuration values. For example:
 > ```
 > XDG_DATA_HOME=/path/to/custom/data
 > XDG_CONFIG_HOME=/path/to/custom/config
 > ```
-> For the most reliable configuration, especially if you need these settings to take effect during application startup, consider setting them as environment variables before running the application.
-
-   ```
+> For the most reliable configuration, especially if you need these settings
+> to take effect during application startup, consider setting them as
+> environment variables before running the application.
 
 ## Verifying Installation
 
