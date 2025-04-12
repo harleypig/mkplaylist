@@ -1,4 +1,3 @@
-
 # Configuration Architecture
 
 The mkplaylist configuration system is designed to be modular, extensible, and
@@ -69,17 +68,26 @@ The `MkPlaylistConfig` class in `__init__.py` brings everything together:
 
 ## Automatic Service Configuration Loading
 
-The configuration system includes an automatic service discovery and loading mechanism that makes it easy to add new service configurations without modifying the main configuration class.
+The configuration system includes an automatic service discovery and loading
+mechanism that makes it easy to add new service configurations without
+modifying the main configuration class.
 
 ### How It Works
 
-1. **Service Discovery**: When the main configuration class is initialized, it scans the `mkplaylist/config` package for modules that define service configuration classes (subclasses of `ServiceConfig`).
+1. **Service Discovery**: When the main configuration class is initialized, it
+   scans the `mkplaylist/config` package for modules that define service
+   configuration classes (subclasses of `ServiceConfig`).
 
-2. **Registration**: Each discovered service configuration class is registered in a central registry.
+2. **Registration**: Each discovered service configuration class is registered
+   in a central registry.
 
-3. **Instantiation**: The main configuration class creates instances of all registered service configurations and makes them available both as attributes (for backward compatibility) and through lookup methods.
+3. **Instantiation**: The main configuration class creates instances of all
+   registered service configurations and makes them available both as
+   attributes (for backward compatibility) and through lookup methods.
 
-This approach allows you to add new service configurations simply by creating a new module in the `mkplaylist/config` directory that defines a class extending `ServiceConfig`.
+This approach allows you to add new service configurations simply by creating
+a new module in the `mkplaylist/config` directory that defines a class
+extending `ServiceConfig`.
 
 ### Key Components
 
@@ -103,18 +111,54 @@ To add a new service configuration:
 2. Define a new configuration class that extends `ServiceConfig`
 3. Implement the required methods: `validate()`, `status()`, and `sources()`
 4. Implement the required `service_name` property
+5. Define any service-specific validation rules in the same file
 
 The new service will be automatically discovered and loaded by the main configuration class. You don't need to modify any other files.
 
 Here's an example of adding a new service configuration for Deezer:
 
+#### 4. Declarative Configuration
+
+The approach enables a declarative style for defining validation requirements:
+
 ```python
+self.validation_rules = {
+    'CLIENT_ID': [required, exact_length(32), is_alphanumeric],
+    'CLIENT_SECRET': [required, exact_length(32), is_alphanumeric],
+    'REDIRECT_URI': [required, is_url],
+}
+```
+
+This declarative style makes it immediately clear what validation requirements apply to each configuration value, improving code readability and maintainability.
+
+#### 5. Service-Specific Organization
+
+The pattern encourages organizing validation rules by service:
+
+- Common validation rules are defined in `base.py`
+- Service-specific validation rules are defined in their respective service modules
+
+This organization ensures that:
+
+```python
+# In spotify.py
+def is_valid_client_id(value: str) -> Tuple[bool, str]:
+    """Spotify-specific validation for client IDs."""
+    # ...
+
+# In lastfm.py
+def is_valid_api_key(value: str) -> Tuple[bool, str]:
+    """Last.fm-specific validation for API keys."""
+    # ...
+
+# In deezer.py
 # mkplaylist/config/deezer.py
 from typing import Dict, Tuple
 from mkplaylist.config.base import ServiceConfig, ValidationRules, required, is_url
 
 # Deezer-specific validation rules
 def is_valid_app_id(value: str) -> Tuple[bool, str]:
+    """Deezer-specific validation for app IDs."""
     """Validate that a value is a valid Deezer Application ID."""
     if not value:
         return False, "Deezer Application ID cannot be empty"
@@ -135,38 +179,283 @@ class DeezerConfig(ServiceConfig):
     def service_name(self) -> str:
         """Get the name of the service."""
         return 'deezer'
-    
+
     def __init__(self):
         super().__init__()
-        
+
+        # Define validation rules using both common and service-specific rules
         # Load Deezer API credentials
         self.APP_ID = self.get_env('DEEZER_APP_ID', '')
         self.APP_SECRET = self.get_env('DEEZER_APP_SECRET', '')
         self.REDIRECT_URI = self.get_env(
             'DEEZER_REDIRECT_URI', 'http://localhost:8888/callback'
         )
-        
+
         # Define validation rules
         self.validation_rules: ValidationRules = {
+            'CLIENT_ID': [required, is_valid_client_id],
+            # ...
             'APP_ID': [required, is_valid_app_id],
             'APP_SECRET': [required],
             'REDIRECT_URI': [required, is_url],
         }
-    
+
+```
+
+When adding a new service, follow this pattern by defining any service-specific validation rules in the service's configuration module.
+
     def validate(self) -> Dict[str, str]:
         # Implementation similar to other service configs
         # ...
         pass
-    
+
     def status(self) -> Dict[str, bool]:
         # Implementation similar to other service configs
         # ...
         pass
-    
+
     def sources(self) -> Dict[str, str]:
         # Implementation similar to other service configs
         # ...
         pass
+```
+
+Note how the service-specific validation rule `is_valid_app_id` is defined in the same file as the `DeezerConfig` class. This keeps all Deezer-specific validation logic contained within the Deezer configuration module.
+```
+
+### Required Components
+
+Every service configuration class must:
+
+1. **Extend ServiceConfig**: Inherit from the `ServiceConfig` base class
+2. **Define service_name**: Implement the `service_name` property to return a unique name
+3. **Implement Required Methods**: Provide implementations for `validate()`, `status()`, and `sources()`
+4. **Define Validation Rules**: Set up appropriate validation rules for configuration values
+
+### Naming Conventions
+
+- **Module Name**: Should match the service name (e.g., `deezer.py` for Deezer)
+- **Class Name**: Should be the capitalized service name followed by "Config" (e.g., `DeezerConfig`)
+- **Service Name**: Should be lowercase and match the module name (e.g., `'deezer'`)
+- **Environment Variables**: Should be uppercase and prefixed with the service name (e.g., `DEEZER_APP_ID`)
+
+### Accessing Service Configurations
+
+Once a service configuration is loaded, it can be accessed in several ways:
+
+```python
+from mkplaylist.config import config
+
+# Direct attribute access (for backward compatibility)
+deezer_app_id = config.deezer.APP_ID
+
+# Using get_service method
+deezer_config = config.get_service('deezer')
+deezer_app_id = deezer_config.APP_ID if deezer_config else None
+
+# Getting all services
+all_services = config.get_services()
+service_names = config.get_service_names()
+```
+
+### Accessing Configuration Values
+
+```python
+from mkplaylist.config import config
+
+# Access Spotify configuration
+spotify_client_id = config.spotify.CLIENT_ID
+spotify_client_secret = config.spotify.CLIENT_SECRET
+
+# Access Last.fm configuration
+lastfm_api_key = config.lastfm.API_KEY
+lastfm_username = config.lastfm.USERNAME
+
+# Access application settings
+default_sync_days = config.DEFAULT_SYNC_DAYS
+log_level = config.LOG_LEVEL
+```
+
+### Accessing Directory Paths
+
+```python
+from mkplaylist.config import data_dir, config_dir, cache_dir, state_dir, db_path
+
+# Get directory paths
+data_directory = data_dir()
+config_directory = config_dir()
+cache_directory = cache_dir()
+state_directory = state_dir()
+
+# Get database path
+database_path = db_path()
+```
+
+### Validating Configuration
+
+```python
+from mkplaylist.config import validate
+
+# Check if configuration is valid
+issues = validate()
+if issues:
+    print("Configuration issues found:")
+    for key, message in issues.items():
+        print(f"  - {key}: {message}")
+else:
+    print("Configuration is valid!")
+```
+
+### Checking Configuration Status
+
+```python
+from mkplaylist.config import status
+
+# Get configuration status
+status_dict = status()
+for key, value in status_dict.items():
+    print(f"{key}: {'OK' if value else 'Not configured'}")
+```
+
+### Checking Configuration Sources
+
+```python
+from mkplaylist.config import sources
+
+# Get configuration sources
+sources_dict = sources()
+for key, source in sources_dict.items():
+    print(f"{key}: {source}")
+```
+
+## Validation System
+
+The validation system is designed to be flexible and extensible. It consists of:
+
+1. **Validation Rules**: Functions that check if a value meets certain criteria
+2. **Validation Framework**: Methods to apply rules to configuration values
+3. **User-Friendly Messages**: Clear error messages for configuration issues
+
+### Validation Rules
+
+Validation rules are functions that take a value and return a tuple of `(bool, str)`:
+- `bool`: Whether the validation passed (`True`) or failed (`False`)
+- `str`: An error message if validation failed, empty string otherwise
+
+The base configuration module provides common validation rules:
+- `required`: Checks if a value is not None or empty
+- `min_length`: Checks if a string has a minimum length
+- `max_length`: Checks if a string has a maximum length
+- `exact_length`: Checks if a string has an exact length
+- `pattern`: Checks if a string matches a regex pattern
+- `is_positive`: Checks if a value is a positive integer
+- `is_url`: Checks if a value is a valid URL
+- `is_path`: Checks if a value is a Path object
+- `path_exists`: Checks if a path exists
+- `is_file`: Checks if a path is a file
+- `is_directory`: Checks if a path is a directory
+- `one_of`: Checks if a value is one of the given options
+
+Service-specific modules can define their own validation rules:
+- `is_valid_client_id`: Checks if a value is a valid Spotify Client ID
+- `is_valid_client_secret`: Checks if a value is a valid Spotify Client Secret
+- `is_valid_redirect_uri`: Checks if a value is a valid Spotify Redirect URI
+- `is_valid_api_key`: Checks if a value is a valid Last.fm API Key
+- `is_valid_api_secret`: Checks if a value is a valid Last.fm API Secret
+- `is_valid_username`: Checks if a value is a valid Last.fm username
+
+### Adding Custom Validation Rules
+
+To add a custom validation rule, define a function that takes a value and returns a tuple of `(bool, str)`:
+
+```python
+def is_valid_email(value: str) -> Tuple[bool, str]:
+    """Validate that a value is a valid email address."""
+    if not value:
+        return False, "Email cannot be empty"
+    if "@" not in value or "." not in value:
+        return False, "Invalid email format"
+    return True, ""
+```
+
+Then add it to the validation rules for a configuration value:
+
+```python
+self.validation_rules: ValidationRules = {
+    'EMAIL': [required, is_valid_email],
+}
+```
+
+### Applying Validation Rules
+
+The `_validate_value` method applies a list of validation rules to a value:
+
+```python
+errors = self._validate_value(value, rules)
+```
+
+The `_validate_with_rules` method applies a dictionary of validation rules to a dictionary of values:
+
+```python
+issues = self._validate_with_rules(values, self.validation_rules)
+```
+
+### Validation Rule Design Pattern
+
+The configuration system uses a design pattern where validation rules are defined as standalone functions outside of the configuration classes. This approach offers several important benefits:
+
+#### 1. Separation of Concerns
+
+By defining validation rules as standalone functions outside of classes:
+- **Clear Responsibility**: Each validation rule has a single, well-defined responsibility
+- **Focused Logic**: Rules contain only validation logic, not configuration management
+- **Independent Testing**: Rules can be tested independently of the configuration classes
+- **Reduced Complexity**: Configuration classes focus on managing values, not validation details
+
+#### 2. Reusability and Composition
+
+Standalone validation rules enable powerful reuse patterns:
+- **Cross-Service Reuse**: Common rules like `required` or `exact_length` can be used across different service configurations
+- **Rule Composition**: Multiple rules can be combined to create complex validation logic
+- **Rule Factories**: Higher-order functions like `min_length` can generate specialized rules
+- **Mix and Match**: Different combinations of rules can be applied to different configuration values
+
+For example, the same `exact_length(32)` rule can be used for both Spotify Client IDs and Last.fm API Keys:
+
+```python
+# In spotify.py
+self.validation_rules = {
+    'CLIENT_ID': [required, exact_length(32), is_alphanumeric],
+    # ...
+```
+
+By placing service-specific validation rules in their respective service modules:
+
+1. Each service module is self-contained with all its validation logic
+2. Adding a new service doesn't require modifying existing modules
+3. Service-specific validation rules can be easily found and maintained
+4. The codebase remains modular and follows the principle of separation of concerns
+
+#### 6. Practical Examples
+When adding a new service, follow this pattern by defining any service-specific validation rules in the service's configuration module.
+
+    def validate(self) -> Dict[str, str]:
+        # Implementation similar to other service configs
+        # ...
+        pass
+
+    def status(self) -> Dict[str, bool]:
+        # Implementation similar to other service configs
+        # ...
+        pass
+
+    def sources(self) -> Dict[str, str]:
+        # Implementation similar to other service configs
+        # ...
+        pass
+```
+
+Note how the service-specific validation rule `is_valid_app_id` is defined in the same file as the `DeezerConfig` class. This keeps all Deezer-specific validation logic contained within the Deezer configuration module.
 ```
 
 ### Required Components
@@ -879,7 +1168,7 @@ Configuration Paths:
   Cache directory: /home/user/.cache/mkplaylist
   State directory: /home/user/.local/state/mkplaylist
   Database path: /home/user/.local/share/mkplaylist/mkplaylist.db
-    
+
 These commands provide a convenient way to check the configuration status and identify any issues.
 
 ## Best Practices
