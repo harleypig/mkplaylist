@@ -1,6 +1,7 @@
 # Getting Started with mkplaylist
 
-This guide will help you get started with using mkplaylist to create dynamic Spotify playlists based on your listening history from Last.fm.
+This guide will help you get started with using mkplaylist to create dynamic
+Spotify playlists based on your listening history from Last.fm.
 
 ## Initial Setup
 
@@ -12,7 +13,8 @@ Before you can start creating playlists, you need to:
 
 ## Authentication
 
-The first time you run a mkplaylist command, you'll be prompted to authenticate with both Spotify and Last.fm:
+The first time you run a mkplaylist command, you'll be prompted to
+authenticate with both Spotify and Last.fm:
 
 ```bash
 mkplaylist sync
@@ -27,7 +29,8 @@ This will:
 
 ## Data Synchronization
 
-Before creating playlists, you need to sync your data from Spotify and Last.fm:
+Before creating playlists, you need to sync your data from Spotify and
+Last.fm:
 
 ```bash
 mkplaylist sync
@@ -40,7 +43,9 @@ This command:
 3. Stores this data in a local SQLite database
 4. Matches tracks between the two services
 
-The initial sync may take some time depending on how many playlists you have and how extensive your listening history is. Subsequent syncs will be faster as they only fetch new data.
+The initial sync may take some time depending on how many playlists you have
+and how extensive your listening history is. Subsequent syncs will be faster
+as they only fetch new data.
 
 ## Creating Your First Playlist
 
@@ -59,7 +64,8 @@ This command:
 
 ## Understanding Criteria Syntax
 
-The criteria string uses natural language-like syntax to specify which tracks to include:
+The criteria string uses natural language-like syntax to specify which tracks
+to include:
 
 - **Recently added tracks**: `X most recently added songs`
 - **Recently played tracks**: `X last played songs`

@@ -1,6 +1,7 @@
 # Examples
 
-This document provides practical examples of using mkplaylist to create dynamic Spotify playlists based on various criteria.
+This document provides practical examples of using mkplaylist to create
+dynamic Spotify playlists based on various criteria.
 
 ## Basic Examples
 
@@ -177,4 +178,6 @@ mkplaylist delete "Temporary Playlist"
 4. **Add descriptions** - Use the `--description` option to document the purpose of the playlist
 5. **Update regularly** - Keep your playlists fresh by updating them periodically
 
-Remember that the effectiveness of your criteria depends on the quality and quantity of your listening data. Regular syncing ensures that your playlists reflect your current listening habits.
+Remember that the effectiveness of your criteria depends on the quality and
+quantity of your listening data. Regular syncing ensures that your playlists
+reflect your current listening habits.

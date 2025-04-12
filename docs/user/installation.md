@@ -1,6 +1,7 @@
 # Installation Guide
 
-This guide will walk you through the process of installing the mkplaylist application.
+This guide will walk you through the process of installing the mkplaylist
+application.
 
 ## Prerequisites
 
@@ -57,7 +58,8 @@ If you prefer to install from source:
 
 ## Configuration
 
-After installation, you'll need to configure mkplaylist with your API credentials:
+After installation, you'll need to configure mkplaylist with your API
+credentials:
 
 1. Create a `.env` file in your working directory (or copy the provided `.env.example`):
    ```
@@ -82,7 +84,8 @@ You should see the version number of the installed package.
 
 ## Next Steps
 
-Once you've successfully installed mkplaylist, proceed to the [Getting Started Guide](getting_started.md) to learn how to use the application.
+Once you've successfully installed mkplaylist, proceed to the [Getting Started
+Guide](getting_started.md) to learn how to use the application.
 
 ## Troubleshooting
 
@@ -99,4 +102,5 @@ Once you've successfully installed mkplaylist, proceed to the [Getting Started G
 3. **Package dependencies issues**
    - Try reinstalling with `pip install --upgrade --force-reinstall mkplaylist`
 
-If you encounter any other issues, please check the project's GitHub repository for known issues or to report a new one.
+If you encounter any other issues, please check the project's GitHub
+repository for known issues or to report a new one.

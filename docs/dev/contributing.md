@@ -1,6 +1,7 @@
 # Contributing Guide
 
-Thank you for your interest in contributing to mkplaylist! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to mkplaylist! This document
+provides guidelines and instructions for contributing to the project.
 
 ## Table of Contents
 
@@ -90,7 +91,8 @@ mkplaylist/
 
 ### Style Guide
 
-This project follows [PEP 8](https://www.python.org/dev/peps/pep-0008/) style guide for Python code.
+This project follows [PEP 8](https://www.python.org/dev/peps/pep-0008/) style
+guide for Python code.
 
 ### Code Formatting
 
@@ -113,20 +115,22 @@ isort mkplaylist tests
 flake8 mkplaylist tests
 ```
 
-These checks will also run automatically when you commit code if you've installed the pre-commit hooks.
+These checks will also run automatically when you commit code if you've
+installed the pre-commit hooks.
 
 ### Type Hints
 
-We use type hints throughout the codebase. New code should include appropriate type annotations:
+We use type hints throughout the codebase. New code should include appropriate
+type annotations:
 
 ```python
 def get_track_by_id(track_id: str) -> Optional[Track]:
     """
     Get a track by its ID.
-    
+
     Args:
         track_id: The Spotify ID of the track
-        
+
     Returns:
         The track object if found, None otherwise
     """
@@ -169,7 +173,7 @@ def test_parse_recently_added():
     parser = QueryParser()
     criteria = "10 most recently added songs"
     query = parser.parse(criteria)
-    
+
     assert query.limit == 10
     assert query.sort_by == "added_at"
     assert query.sort_order == "desc"
@@ -189,9 +193,9 @@ def test_get_playlist():
     """Test getting a playlist from Spotify."""
     client = SpotifyClient(client_id, client_secret, redirect_uri)
     client.authenticate()
-    
+
     playlist = client.get_playlist('spotify:playlist:37i9dQZEVXcJZyENOWUFo7')
-    
+
     assert playlist['name'] == 'Today\'s Top Hits'
     assert len(playlist['tracks']['items']) > 0
 ```
@@ -210,15 +214,15 @@ Example:
 def create_playlist(name: str, description: str = "", public: bool = False) -> Dict[str, Any]:
     """
     Create a new Spotify playlist.
-    
+
     Args:
         name: The name of the playlist
         description: Optional description for the playlist
         public: Whether the playlist should be public
-        
+
     Returns:
         The created playlist data
-        
+
     Raises:
         SpotifyAuthError: If authentication fails
         SpotifyAPIError: If the API request fails
@@ -245,7 +249,8 @@ def create_playlist(name: str, description: str = "", public: bool = False) -> D
 
 ### Commit Messages
 
-Follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
+Follow the [Conventional Commits](https://www.conventionalcommits.org/)
+specification:
 
 ```
 <type>(<scope>): <description>
@@ -337,11 +342,14 @@ When requesting a feature, please include:
 
 ## Code of Conduct
 
-Please note that this project is released with a [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+Please note that this project is released with a [Contributor Code of
+Conduct](CODE_OF_CONDUCT.md). By participating in this project you agree to
+abide by its terms.
 
 ## License
 
-By contributing to mkplaylist, you agree that your contributions will be licensed under the project's license.
+By contributing to mkplaylist, you agree that your contributions will be
+licensed under the project's license.
 
 ## Questions?
 

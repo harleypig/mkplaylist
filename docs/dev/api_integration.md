@@ -1,6 +1,7 @@
 # API Integration
 
-This document provides detailed information about the integration with external APIs in the mkplaylist application.
+This document provides detailed information about the integration with
+external APIs in the mkplaylist application.
 
 ## Overview
 
@@ -15,7 +16,8 @@ These integrations are handled by dedicated client classes in the `mkplaylist/ap
 
 ### Authentication
 
-Spotify uses OAuth 2.0 for authentication. The application implements the Authorization Code flow:
+Spotify uses OAuth 2.0 for authentication. The application implements the
+Authorization Code flow:
 
 1. User is redirected to Spotify's authorization page
 2. User grants permissions to the application
@@ -56,7 +58,8 @@ Spotify API has rate limits that must be respected:
 - Short-term rate limit: 1000 requests per 25 seconds
 - Long-term rate limit: 10,000 requests per day
 
-The application implements exponential backoff for retrying requests when rate limits are encountered.
+The application implements exponential backoff for retrying requests when rate
+limits are encountered.
 
 ### Error Handling
 
@@ -96,7 +99,8 @@ Last.fm API has the following rate limits:
 - 1000 requests per day for unauthenticated calls
 - 5000 requests per day for authenticated calls
 
-The application implements a request throttling mechanism to stay within these limits.
+The application implements a request throttling mechanism to stay within these
+limits.
 
 ### Error Handling
 
@@ -123,22 +127,23 @@ class SpotifyClient:
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
         self.sp = None  # Spotipy client instance
-        
+
     def authenticate(self):
         # Handle authentication flow
-        
+
     def get_user_playlists(self):
         # Fetch and return user's playlists
-        
+
     def create_playlist(self, name, description="", public=False):
         # Create a new playlist
-        
+
     # Additional methods for playlist and track operations
 ```
 
 ### Last.fm Client
 
-The `LastFmClient` class in `lastfm_client.py` handles all Last.fm API interactions:
+The `LastFmClient` class in `lastfm_client.py` handles all Last.fm API
+interactions:
 
 ```python
 class LastFmClient:
@@ -147,16 +152,16 @@ class LastFmClient:
         self.api_secret = api_secret
         self.username = username
         self.network = None  # pylast network instance
-        
+
     def authenticate(self):
         # Set up authentication
-        
+
     def get_recent_tracks(self, limit=50, from_date=None, to_date=None):
         # Fetch and return recently played tracks
-        
+
     def get_top_tracks(self, period="overall", limit=50):
         # Fetch and return most played tracks
-        
+
     # Additional methods for track operations
 ```
 
@@ -179,7 +184,8 @@ class LastFmClient:
 
 ## Matching Strategy
 
-A key challenge is matching tracks between Spotify and Last.fm. The application uses the following strategy:
+A key challenge is matching tracks between Spotify and Last.fm. The
+application uses the following strategy:
 
 1. **Exact Match**: Artist name and track title match exactly
 2. **Normalized Match**: Comparison after normalizing strings (removing special characters, etc.)
@@ -194,7 +200,8 @@ For testing API integrations without making actual API calls:
 2. **VCR Cassettes**: Using the `vcrpy` library to record and replay API interactions
 3. **API Simulators**: Mock servers that simulate API behavior for testing
 
-See the [Contributing Guide](contributing.md) for more information on testing API integrations.
+See the [Contributing Guide](contributing.md) for more information on testing
+API integrations.
 
 ## Adding New API Integrations
 

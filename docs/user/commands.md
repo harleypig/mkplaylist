@@ -1,6 +1,7 @@
 # Command Reference
 
-This document provides detailed information about all available commands in the mkplaylist application.
+This document provides detailed information about all available commands in
+the mkplaylist application.
 
 ## Global Options
 

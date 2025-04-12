@@ -1,20 +1,26 @@
 # Database Schema
 
-This document provides detailed information about the database schema used in the mkplaylist application.
+This document provides detailed information about the database schema used in
+the mkplaylist application.
 
 ## Overview
 
-mkplaylist uses SQLite as its database engine, with SQLAlchemy as the ORM (Object-Relational Mapping) layer. The database stores information about tracks, playlists, and listening history, combining data from both Spotify and Last.fm.
+mkplaylist uses SQLite as its database engine, with SQLAlchemy as the ORM
+(Object-Relational Mapping) layer. The database stores information about
+tracks, playlists, and listening history, combining data from both Spotify and
+Last.fm.
 
 ## Database File
 
-By default, the database is stored in a file named `mkplaylist.db` in the user's data directory:
+By default, the database is stored in a file named `mkplaylist.db` in the
+user's data directory:
 
 - Linux: `~/.local/share/mkplaylist/mkplaylist.db`
 - macOS: `~/Library/Application Support/mkplaylist/mkplaylist.db`
 - Windows: `C:\Users\<username>\AppData\Local\mkplaylist\mkplaylist.db`
 
-This location can be overridden using the `MKPLAYLIST_DB_PATH` environment variable.
+This location can be overridden using the `MKPLAYLIST_DB_PATH` environment
+variable.
 
 ## Schema Diagram
 
@@ -38,13 +44,13 @@ This location can be overridden using the `MKPLAYLIST_DB_PATH` environment varia
          ▲                │           │
          │                │           │
          │                │           │
-┌────────┴────────────┐   │   ┌──────┴────────────┐
-│mkplaylist_listening_│   │   │mkplaylist_playlist_│
-│     history         │   │   │      tracks        │
+┌────────┴────────────┐   │   ┌───────┴─────────────┐
+│mkplaylist_listening_│   │   │mkplaylist_playlist_ │
+│     history         │   │   │      tracks         │
 ├─────────────────────┤   │   ├─────────────────────┤
 │ id (PK)             │   │   │ id (PK)             │
 │ track_id (FK)       │───┘   │ playlist_id (FK)    │
-│ played_at           │       │ track_id (FK)       │───┘
+│ played_at           │       │ track_id (FK)       │
 │ source              │       │ position            │
 │ created_at          │       │ added_at            │
 └─────────────────────┘       │ created_at          │
@@ -134,16 +140,18 @@ Indexes:
 
 ## SQLAlchemy Models
 
-The database schema is implemented using SQLAlchemy ORM models in `mkplaylist/database/models.py`.
+The database schema is implemented using SQLAlchemy ORM models in
+`mkplaylist/database/models.py`.
 
 ### Base Model
 
-All models inherit from a common base class that provides common fields and functionality:
+All models inherit from a common base class that provides common fields and
+functionality:
 
 ```python
 class Base(DeclarativeBase):
     """Base class for all models."""
-    
+
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
@@ -154,9 +162,9 @@ class Base(DeclarativeBase):
 ```python
 class Track(Base):
     """Model representing a music track."""
-    
+
     __tablename__ = "mkplaylist_tracks"
-    
+
     spotify_id = Column(String, unique=True, index=True)
     name = Column(String, nullable=False)
     artist = Column(String, nullable=False)
@@ -166,7 +174,7 @@ class Track(Base):
     added_at = Column(DateTime, default=datetime.utcnow, index=True)
     last_played_at = Column(DateTime, index=True)
     play_count = Column(Integer, default=0)
-    
+
     # Relationships
     playlists = relationship("Playlist", secondary="mkplaylist_playlist_tracks", back_populates="tracks")
     listening_history = relationship("ListeningHistory", back_populates="track")
@@ -177,15 +185,15 @@ class Track(Base):
 ```python
 class Playlist(Base):
     """Model representing a playlist."""
-    
+
     __tablename__ = "mkplaylist_playlists"
-    
+
     spotify_id = Column(String, unique=True, index=True)
     name = Column(String, nullable=False, index=True)
     description = Column(String)
     owner = Column(String)
     is_public = Column(Boolean, default=False)
-    
+
     # Relationships
     tracks = relationship("Track", secondary="mkplaylist_playlist_tracks", back_populates="playlists")
     playlist_tracks = relationship("PlaylistTrack", back_populates="playlist")
@@ -196,18 +204,18 @@ class Playlist(Base):
 ```python
 class PlaylistTrack(Base):
     """Junction model linking tracks to playlists."""
-    
+
     __tablename__ = "mkplaylist_playlist_tracks"
-    
+
     playlist_id = Column(Integer, ForeignKey("mkplaylist_playlists.id"), index=True)
     track_id = Column(Integer, ForeignKey("mkplaylist_tracks.id"), index=True)
     position = Column(Integer)
     added_at = Column(DateTime, default=datetime.utcnow, index=True)
-    
+
     # Relationships
     playlist = relationship("Playlist", back_populates="playlist_tracks")
     track = relationship("Track")
-    
+
     # Constraints
     __table_args__ = (
         UniqueConstraint("playlist_id", "track_id", name="uq_playlist_track"),
@@ -219,62 +227,63 @@ class PlaylistTrack(Base):
 ```python
 class ListeningHistory(Base):
     """Model representing a track play event."""
-    
+
     __tablename__ = "mkplaylist_listening_history"
-    
+
     track_id = Column(Integer, ForeignKey("mkplaylist_tracks.id"), index=True)
     played_at = Column(DateTime, nullable=False, index=True)
     source = Column(String, default="lastfm")
-    
+
     # Relationships
     track = relationship("Track", back_populates="listening_history")
 ```
 
 ## Database Operations
 
-The `DatabaseManager` class in `mkplaylist/database/db_manager.py` provides an interface for common database operations:
+The `DatabaseManager` class in `mkplaylist/database/db_manager.py` provides an
+interface for common database operations:
 
 ```python
 class DatabaseManager:
     """Manages database operations."""
-    
+
     def __init__(self, db_path=None):
         self.db_path = db_path or get_default_db_path()
         self.engine = create_engine(f"sqlite:///{self.db_path}")
         self.Session = sessionmaker(bind=self.engine)
-        
+
     def create_tables(self):
         """Create all tables if they don't exist."""
         Base.metadata.create_all(self.engine)
-        
+
     def get_session(self):
         """Get a new database session."""
         return self.Session()
-        
+
     # Track operations
     def add_track(self, track_data):
         """Add a new track or update an existing one."""
-        
+
     def get_track_by_spotify_id(self, spotify_id):
         """Get a track by its Spotify ID."""
-        
+
     def get_tracks_by_criteria(self, criteria):
         """Get tracks matching the given criteria."""
-        
+
     # Playlist operations
     def add_playlist(self, playlist_data):
         """Add a new playlist or update an existing one."""
-        
+
     def get_playlist_by_spotify_id(self, spotify_id):
         """Get a playlist by its Spotify ID."""
-        
+
     def add_track_to_playlist(self, playlist_id, track_id, position=None):
         """Add a track to a playlist."""
-        
+
     # Listening history operations
     def add_listening_event(self, track_id, played_at, source="lastfm"):
         """Add a new listening event."""
-        
+
     def get_recently_played_tracks(self, limit=10):
         """Get the most recently played tracks."""
 ```
@@ -326,7 +335,8 @@ def get_tracks_played_in_last_days(session, days=7, limit=None):
 
 ## Database Migrations
 
-The application uses Alembic for database migrations. Migration scripts are stored in the `migrations/` directory.
+The application uses Alembic for database migrations. Migration scripts are
+stored in the `migrations/` directory.
 
 To create a new migration:
 
@@ -394,4 +404,5 @@ logging.basicConfig()
 logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 ```
 
-This will log all SQL queries to the console, which can be helpful for debugging.
+This will log all SQL queries to the console, which can be helpful for
+debugging.

@@ -1,6 +1,8 @@
 # Architecture Overview
 
-This document provides a detailed overview of the mkplaylist application architecture, explaining how the different components interact and the design decisions behind them.
+This document provides a detailed overview of the mkplaylist application
+architecture, explaining how the different components interact and the design
+decisions behind them.
 
 ## High-Level Architecture
 
@@ -170,4 +172,5 @@ The architecture is designed to be extensible in several ways:
 
 ## Development Considerations
 
-For information on how to extend or modify the architecture, see the [Contributing Guide](contributing.md).
+For information on how to extend or modify the architecture, see the
+[Contributing Guide](contributing.md).
