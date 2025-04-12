@@ -30,7 +30,7 @@ load_dotenv(override=True)
 def get_data_dir() -> Path:
   """Get the data directory for the application."""
   if os.name == 'nt':                                      # Windows
-    # pyright: reportUnreachableCode=false
+    # pyright: ignore[reportUnreachableCode]
     data_dir = Path(os.environ.get('APPDATA', ''))
   else:                                                    # Unix/Linux/Mac
     data_dir = Path(
