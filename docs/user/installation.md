@@ -61,12 +61,6 @@ If you prefer, you can also install mkplaylist using pip directly from the GitHu
 pip install git+https://github.com/harleypig/mkplaylist.git
 ```
 
-If you prefer, you can also install mkplaylist using pip:
-
-```bash
-pip install mkplaylist
-```
-
 ### Installing from Source
 
 For development or if you want to make modifications:
