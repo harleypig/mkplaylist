@@ -64,7 +64,7 @@ class SpotifyClient:
 
 
     # Use the state directory for token storage
-    token_path = f"{self.config.get_state_dir()}/spotify_token.json"
+    token_path = f"{self.config.state_dir()}/spotify_token.json"
     
     auth_manager = SpotifyOAuth(
       client_id=self.client_id,
@@ -161,6 +161,7 @@ class SpotifyClient:
         results = None
 
     return tracks
+
 
 
 

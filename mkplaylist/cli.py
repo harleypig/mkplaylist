@@ -36,7 +36,7 @@ def cli():
     """
   # Check configuration
   issues = config.validate_config()
-  if issues:
+  issues = config.validate()
     click.echo("Configuration issues detected:")
     for key, message in issues.items():
       click.echo(f"  - {message}")
@@ -178,3 +178,4 @@ def main():
 
 if __name__ == '__main__':
   main()
+
