@@ -75,15 +75,11 @@ If you prefer to install from source:
 
 1. Clone the repository:
    ```bash
-   
-   ```bash
    git clone https://github.com/harleypig/mkplaylist.git
    cd mkplaylist
    ```
-   
+
 2. Install the package in development mode:
-   ```bash
-   
    ```bash
    pip install -e .
    ```
@@ -97,14 +93,11 @@ credentials:
 
 1. Create a `.env` file in your working directory (or copy the provided `.env.example`):
    ```
-   ```
    SPOTIFY_CLIENT_ID=your_spotify_client_id
    SPOTIFY_CLIENT_SECRET=your_spotify_client_secret
    SPOTIFY_REDIRECT_URI=http://localhost:8888/callback
    LASTFM_API_KEY=your_lastfm_api_key
    LASTFM_API_SECRET=your_lastfm_shared_secret
-   ```
-
    ```
 
 2. Replace the placeholder values with your actual API credentials
@@ -187,13 +180,11 @@ This flexibility allows you to:
 To verify that mkplaylist is installed correctly, run:
 
 ```bash
-```bash
 mkplaylist --version
 ```
 
 If you installed with pipx, you can also verify the installation with:
 
-```bash
 ```bash
 pipx list
 ```
