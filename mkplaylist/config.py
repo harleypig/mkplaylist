@@ -30,6 +30,7 @@ load_dotenv(override=True)
 def get_data_dir() -> Path:
   """Get the data directory for the application."""
   if os.name == 'nt':                                      # Windows
+                                                           # Ignore pyrights warning about this code being  unreachable, AI!
     base_dir = Path(os.environ.get('APPDATA', '')) / 'mkplaylist'
   else:                                                    # Unix/Linux/Mac
     base_dir = Path(
