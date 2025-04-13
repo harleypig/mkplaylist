@@ -73,12 +73,12 @@ repos:
       - id: ruff
         args: [--fix]
         # Will modify files to fix issues detected by ruff
-        
+
   - repo: https://github.com/thlorenz/doctoc
     rev: v2.2.0
     hooks:
       - id: doctoc
-        args: [--title, "## Table of Contents", --maxlevel, "4"]
+        args: [--title, "## Table of Contents", --maxlevel, "2"]
         # Will update or add a table of contents to markdown files
 
 # This configuration will modify files to fix issues
