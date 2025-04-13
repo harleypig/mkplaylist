@@ -1,13 +1,15 @@
 # Project Conventions
 
-This document outlines the coding conventions and standards for the mkplaylist project. Following these guidelines ensures consistency across the codebase and makes collaboration easier.
+This document outlines the coding conventions and standards for the mkplaylist
+project. Following these guidelines ensures consistency across the codebase
+and makes collaboration easier.
 
 ## Code Style
 
 ### Python
 
-- **Indentation**: 2 spaces (as configured in `.style.yapf`)
-- **Line Length**: 79 characters maximum (as configured in `.style.yapf` and `.flake8`)
+- **Indentation**: 2 spaces
+- **Line Length**: 79 characters maximum
 - **Naming**:
   - Classes: `CamelCase`
   - Functions/Methods: `snake_case`
@@ -15,24 +17,30 @@ This document outlines the coding conventions and standards for the mkplaylist p
   - Constants: `UPPER_SNAKE_CASE`
 - **Docstrings**: Google style docstrings
 - **Imports**: Follow the order specified in `.isort.cfg`
+  - This can be loosely followed; as long as isort runs successfully, you
+      should be ok.
 
 ### Configuration Files
 
-Always honor existing configuration files for code formatting and linting tools:
+Always honor existing configuration files for code formatting and linting
+tools:
 
 - **YAPF**: Use `.style.yapf` for Python code formatting
 - **isort**: Use `.isort.cfg` for import sorting
 - **flake8**: Use `.flake8` for linting
 
-Never modify these configuration files without team discussion and agreement.
+Any other configuration files should be honored too, but be careful of
+overlapping and conflicting settings.
 
 ## Git Workflow
 
-- Create feature branches from `main`
+- Create feature branches from `master`
 - Use descriptive branch names (e.g., `feature/add-spotify-integration`)
-- Write clear commit messages that explain the "why" not just the "what"
+- Write clear commit messages that explain the "why" not just the "what"; use
+    the [Conventional Commits](https://www.conventionalcommits.org/en)
+    specification
 - Keep commits focused on a single logical change
-- Rebase feature branches on `main` before submitting pull requests
+- Rebase feature branches on `master` before submitting pull requests
 
 ## Pull Requests
 
