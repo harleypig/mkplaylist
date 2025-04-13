@@ -1,0 +1,50 @@
+# Default pre-commit configuration for mkplaylist
+# This configuration only checks code without making changes
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: check-case-conflict
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies: []
+        # Use the project's .flake8 configuration
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: [--check-only, --profile=black]
+        # Only check, don't modify
+
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        args: [--check, --diff]
+        # Only check, don't modify
+        # Use the project's line length settings
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.3.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-requests
+          - types-setuptools
+        # Only check, don't modify
+        args: [--no-strict-optional, --ignore-missing-imports]
+
+# Configuration is compatible with existing .flake8 and .style.yapf files
+# This configuration only performs checks and does not modify any files

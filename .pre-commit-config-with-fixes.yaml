@@ -1,0 +1,67 @@
+# Secondary pre-commit configuration for mkplaylist
+# This configuration can modify code and should be run manually
+# To use this configuration, run:
+#   pre-commit run --config .pre-commit-config-with-fixes.yaml --all-files
+# Or for specific files:
+#   pre-commit run --config .pre-commit-config-with-fixes.yaml --files file1.py file2.py
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: debug-statements
+      - id: check-case-conflict
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        args: [--profile=black]
+        # Will modify files to sort imports
+
+  - repo: https://github.com/psf/black
+    rev: 23.3.0
+    hooks:
+      - id: black
+        # Will modify files to format code according to black's style
+
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.0.0
+    hooks:
+      - id: flake8
+        additional_dependencies: []
+        # Only checks, doesn't modify, but included for completeness
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.3.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-requests
+          - types-setuptools
+        args: [--no-strict-optional, --ignore-missing-imports]
+        # Only checks, doesn't modify, but included for completeness
+
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.4.0
+    hooks:
+      - id: pyupgrade
+        args: [--py38-plus]
+        # Will modify files to use newer Python syntax
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.262
+    hooks:
+      - id: ruff
+        args: [--fix]
+        # Will modify files to fix issues detected by ruff
+
+# This configuration will modify files to fix issues
+# It should be run manually, not as part of the git commit process
+# Use it to clean up code before committing

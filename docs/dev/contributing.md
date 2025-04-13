@@ -109,6 +109,7 @@ We use the following tools to ensure code quality:
 You can run these tools manually:
 
 ```bash
+```bash
 # Format code
 black mkplaylist tests
 
@@ -119,8 +120,87 @@ isort mkplaylist tests
 flake8 mkplaylist tests
 ```
 
+```
+
 These checks will also run automatically when you commit code if you've
 installed the pre-commit hooks.
+
+### Pre-commit Hooks
+
+We use [pre-commit](https://pre-commit.com/) to automatically check code before committing. This helps maintain code quality and consistency across the project.
+
+#### Installation
+
+To install pre-commit hooks, run the setup script:
+
+```bash
+# Make the script executable if needed
+chmod +x scripts/setup-pre-commit.sh
+
+# Run the setup script
+./scripts/setup-pre-commit.sh
+```
+
+Alternatively, you can install the hooks manually:
+
+```bash
+# Install pre-commit if you haven't already
+pip install pre-commit
+
+# Install the hooks
+pre-commit install
+```
+
+#### Default Configuration
+
+The default pre-commit configuration (`.pre-commit-config.yaml`) only checks your code without making any changes. It runs the following checks:
+
+- Basic file checks (trailing whitespace, end-of-file, etc.)
+- flake8 for linting
+- isort for import sorting (check-only mode)
+- black for code formatting (check-only mode)
+- mypy for type checking
+
+If any of these checks fail, your commit will be blocked until you fix the issues manually.
+
+#### Making Automatic Fixes
+
+We also provide a secondary configuration (`.pre-commit-config-with-fixes.yaml`) that can automatically fix many issues for you. This configuration is not installed as a git hook and should be run manually:
+
+```bash
+# Run on all files
+pre-commit run --config .pre-commit-config-with-fixes.yaml --all-files
+
+# Run on specific files
+pre-commit run --config .pre-commit-config-with-fixes.yaml --files file1.py file2.py
+```
+
+This configuration will:
+- Fix trailing whitespace and end-of-file issues
+- Sort imports with isort
+- Format code with black
+- Upgrade Python syntax with pyupgrade
+- Fix issues detected by ruff
+
+It's recommended to run this before submitting a pull request to ensure your code meets the project's standards.
+
+#### Why Two Configurations?
+
+We use two separate configurations for the following reasons:
+
+1. **Predictability**: The default configuration never modifies your code, so you won't have unexpected changes during commits.
+2. **Control**: You can choose when to apply automatic fixes rather than having them applied automatically.
+3. **Flexibility**: You can run the fixing configuration on specific files or the entire codebase as needed.
+
+#### Skipping Hooks
+
+In rare cases, you may need to skip pre-commit hooks:
+
+```bash
+git commit -m "Your message" --no-verify
+```
+
+However, this should be used sparingly and only when absolutely necessary. Pull requests with code that doesn't pass the checks will likely be rejected.
 
 ### Type Hints
 
