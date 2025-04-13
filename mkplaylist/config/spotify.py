@@ -144,12 +144,14 @@ class SpotifyConfig(ServiceConfig):
     def sources(self) -> Dict[str, str]:
         """
         Get information about where each Spotify configuration value is coming from.
-        
+
         Helps users understand the configuration precedence by identifying whether each value
         comes from environment variables, .env file, or default values.
-        
+
         Returns:
             Dict[str, str]: A dictionary with configuration items as keys and their sources as string values.
+                        Possible sources: "Environment variable", ".env file",
+                        ".env file (overriding environment variable)", or "Default value".
                             Possible sources: "Environment variable", ".env file",
                             ".env file (overriding environment variable)", or "Default value".
         """
@@ -158,3 +160,4 @@ class SpotifyConfig(ServiceConfig):
             'SPOTIFY_CLIENT_SECRET': self.source('SPOTIFY_CLIENT_SECRET'),
             'SPOTIFY_REDIRECT_URI': self.source('SPOTIFY_REDIRECT_URI'),
         }
+

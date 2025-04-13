@@ -1,3 +1,4 @@
+
 """
 Configuration package for mkplaylist.
 
@@ -12,7 +13,7 @@ import os
 import pkgutil
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type
+from typing import Dict, List, Optional, Type, Any
 
 from mkplaylist.config.base import BaseConfig, ServiceConfig
 
@@ -21,7 +22,6 @@ logger = logging.getLogger(__name__)
 
 # Dictionary to store service configuration classes
 _service_configs: Dict[str, Type[ServiceConfig]] = {}
-
 
 def register_service_config(config_class: Type[ServiceConfig]) -> None:
   """
@@ -44,7 +44,6 @@ def register_service_config(config_class: Type[ServiceConfig]) -> None:
       f"Failed to register service configuration {config_class.__name__}: {e}"
     )
 
-
 def discover_service_configs() -> None:
   """
     Discover and register service configuration classes.
@@ -59,7 +58,7 @@ def discover_service_configs() -> None:
         Returns:
             Dict[str, bool]: A dictionary with configuration items as keys and their status as boolean values.
                          True indicates the item is properly configured.
-        """
+    """
   # Start with base status
   status_dict = super().status()
 
@@ -90,9 +89,7 @@ def discover_service_configs() -> None:
 
   return status_dict
 
-
 class MkPlaylistConfig(BaseConfig):
-
   """
     Main configuration class for mkplaylist.
 
@@ -268,7 +265,6 @@ class MkPlaylistConfig(BaseConfig):
     })
 
     return sources_dict
-
 
 # Create a singleton instance
 config = MkPlaylistConfig()

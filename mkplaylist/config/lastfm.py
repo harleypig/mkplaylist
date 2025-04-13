@@ -154,6 +154,7 @@ class LastfmConfig(ServiceConfig):
 
         Returns:
             Dict[str, str]: A dictionary with configuration items as keys and their sources as string values.
+                        Possible sources: "Environment variable", ".env file",
 
     
                         ".env file (overriding environment variable)", or "Default value".

@@ -12,33 +12,8 @@ from typing import (
   Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
 )
 
-from dotenv import load_dotenv
 
-# Set up logging
-logger = logging.getLogger(__name__)
-
-# Type variable for the configuration class
-T = TypeVar('T', bound='BaseConfig')
-
-# Type definitions for configuration values
-ConfigValue = Union[str, int, bool, Path, None]
-ValidationRule = Callable[[Any], Tuple[bool, str]]
-ValidationRules = Dict[str, List[ValidationRule]]
-
-
-# Common validation rules
-def required(value: Any) -> Tuple[bool, str]:
-  """Validate that a value is not None or empty."""
-  if value is None or (isinstance(value, str) and not value):
-    return False, "Value is required and cannot be empty"
-  return True, ""
-
-
-def min_length(min_len: int) -> ValidationRule:
-  """Create a validator that checks minimum string length."""
-
-  def validator(value: str) -> Tuple[bool, str]:
-    if not isinstance(value, str):
+    
       return False, f"Expected string, got {type(value).__name__}"
     if len(value) < min_len:
       return False, f"Value must be at least {min_len} characters long"
@@ -255,6 +230,26 @@ class ServiceConfig(BaseConfig):
         return {}
 
 
+    def __getattr__(self, name: str) -> Any:
+        """Get an attribute by name, supporting lowercase attribute access.
+
+        This method is called when an attribute is not found through the normal attribute lookup process.
+        It checks if an uppercase version of the attribute name exists, allowing for lowercase attribute access.
+
+        Args:
+            name: The attribute name being accessed.
+
+        Returns:
+            The value of the attribute.
+
+        Raises:
+            AttributeError: If the attribute does not exist in uppercase form.
+        """
+        uppercase_name = name.upper()
+        if hasattr(self, uppercase_name):
+            return getattr(self, uppercase_name)
+        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+    
 class BaseConfig:
 
   """
@@ -577,4 +572,5 @@ class BaseConfig:
     # Default path in data directory
     default_path = self.data_dir() / 'mkplaylist.db'
     return default_path
+
 
