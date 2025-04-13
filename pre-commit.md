@@ -31,9 +31,13 @@ pre-commit run <hook-id> --all-files
 pre-commit run --config .pre-commit-config-with-fixes.yaml <hook-id> --all-files
 ```
 
-## Hook-Specific Commands
+## Hook Categories
 
-### no-commit-to-master
+### Custom Local Hooks
+
+These hooks are implemented locally in the repository and have specific behavior.
+
+#### no-commit-to-master
 
 This hook prevents commits to the master/main branch. It behaves the same in
 both configurations and will abort the commit process with an error message if
@@ -46,25 +50,90 @@ you try to commit directly to master/main.
 Note: This hook doesn't make any changes to files. It simply blocks the commit
 if it's on a protected branch.
 
-### check-files
+#### check-files
 
 Checks for both trailing whitespace and missing final newlines without modifying files.
 
-**Default (check only):**
-```bash
-pre-commit run check-files --all-files
-```
-
-**Direct command (check only):**
 ```bash
 ./scripts/check-files.sh
 ```
 
-Note: This checks for trailing whitespaces and missing newlines. See the
-matching sections below for the fixes.
+Note: This custom hook was created because the standard trailing-whitespace and 
+end-of-file-fixer hooks don't have check-only options. This hook only reports issues
+without modifying files.
 
-### trailing-whitespace (with-fixes only)
+### Validation-Only Hooks
 
+These hooks only check for issues and never modify files in either configuration.
+
+#### check-yaml
+Validates YAML files.
+
+**Direct command:**
+```bash
+find . -name "*.yaml" -o -name "*.yml" | xargs yamllint
+```
+
+#### check-added-large-files
+Prevents large files from being committed.
+
+**Direct command:**
+```bash
+find . -type f -not -path "*/\.*" -not -path "*/venv/*" -size +500k
+```
+
+#### check-toml
+Validates TOML files.
+
+**Direct command:**
+```bash
+find . -name "*.toml" | xargs python -c "import tomli; [tomli.loads(open(f).read()) for f in __import__('sys').argv[1:]]"
+```
+
+#### check-merge-conflict
+Checks for files containing merge conflict strings.
+
+**Direct command:**
+```bash
+grep -l "<<<<<<< HEAD" $(find . -type f -not -path "*/\.*" -not -path "*/venv/*")
+```
+
+#### debug-statements
+Checks for debugger imports and py37+ `breakpoint()` calls.
+
+**Direct command:**
+```bash
+grep -r "import pdb\|import ipdb\|breakpoint()" --include="*.py" .
+```
+
+#### check-case-conflict
+Checks for files with names that would conflict on a case-insensitive filesystem.
+
+#### flake8
+Lints Python files with flake8.
+
+**Direct command:**
+```bash
+flake8 .
+```
+
+Note: flake8 doesn't automatically fix issues in either configuration.
+
+#### mypy
+Type-checks Python code.
+
+**Direct command:**
+```bash
+mypy --no-strict-optional --ignore-missing-imports .
+```
+
+Note: mypy doesn't automatically fix issues in either configuration.
+
+### Check-Only in Default, Fix in With-Fixes
+
+These hooks check for issues in the default configuration but can modify files to fix issues when run with the with-fixes configuration.
+
+#### trailing-whitespace (with-fixes only)
 Removes trailing whitespace at the end of lines.
 
 **With fixes (will modify files):**
@@ -77,8 +146,7 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml trailing-whitespace -
 find . -type f -not -path "*/\.*" -not -path "*/venv/*" | xargs sed -i 's/[[:space:]]*$//'
 ```
 
-### end-of-file-fixer (with-fixes only)
-
+#### end-of-file-fixer (with-fixes only)
 Ensures files end with a newline by modifying them.
 
 **With fixes (will modify files):**
@@ -91,128 +159,7 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml end-of-file-fixer --a
 find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec sh -c 'if [ -n "$(tail -c 1 "{}")" ]; then echo >> "{}"; fi' \;
 ```
 
-### check-yaml
-
-Validates YAML files.
-
-**Default:**
-```bash
-pre-commit run check-yaml --all-files
-```
-
-**With fixes:**
-```bash
-pre-commit run --config .pre-commit-config-with-fixes.yaml check-yaml --all-files
-```
-
-**Direct command:**
-```bash
-find . -name "*.yaml" -o -name "*.yml" | xargs yamllint
-```
-
-### check-added-large-files
-
-Prevents large files from being committed.
-
-**Default:**
-```bash
-pre-commit run check-added-large-files --all-files
-```
-
-**Direct command:**
-```bash
-find . -type f -not -path "*/\.*" -not -path "*/venv/*" -size +500k
-```
-
-### check-toml
-
-Validates TOML files.
-
-**Default:**
-```bash
-pre-commit run check-toml --all-files
-```
-
-**With fixes:**
-```bash
-pre-commit run --config .pre-commit-config-with-fixes.yaml check-toml --all-files
-```
-
-**Direct command:**
-```bash
-find . -name "*.toml" | xargs python -c "import tomli; [tomli.loads(open(f).read()) for f in __import__('sys').argv[1:]]"
-```
-
-### check-merge-conflict
-
-Checks for files containing merge conflict strings.
-
-**Default:**
-```bash
-pre-commit run check-merge-conflict --all-files
-```
-
-**With fixes:**
-```bash
-pre-commit run --config .pre-commit-config-with-fixes.yaml check-merge-conflict --all-files
-```
-
-**Direct command:**
-```bash
-grep -l "<<<<<<< HEAD" $(find . -type f -not -path "*/\.*" -not -path "*/venv/*")
-```
-
-### debug-statements
-
-Checks for debugger imports and py37+ `breakpoint()` calls.
-
-**Default:**
-```bash
-pre-commit run debug-statements --all-files
-```
-
-**With fixes:**
-```bash
-pre-commit run --config .pre-commit-config-with-fixes.yaml debug-statements --all-files
-```
-
-**Direct command:**
-```bash
-grep -r "import pdb\|import ipdb\|breakpoint()" --include="*.py" .
-```
-
-### check-case-conflict
-
-Checks for files with names that would conflict on a case-insensitive filesystem.
-
-**Default:**
-```bash
-pre-commit run check-case-conflict --all-files
-```
-
-**With fixes:**
-```bash
-pre-commit run --config .pre-commit-config-with-fixes.yaml check-case-conflict --all-files
-```
-
-### flake8
-
-Lints Python files with flake8.
-
-**Default (check only):**
-```bash
-flake8 .
-```
-
-**With fixes (check only):**
-```bash
-flake8 .
-```
-
-Note: flake8 doesn't automatically fix issues in either configuration.
-
-### isort
-
+#### isort
 Sorts Python imports.
 
 **Default (check only):**
@@ -225,8 +172,7 @@ isort --check --jobs=-1 .
 isort --jobs=-1 .
 ```
 
-### black
-
+#### black
 Formats Python code.
 
 **Default (check only):**
@@ -239,24 +185,7 @@ black --check --diff .
 black .
 ```
 
-### mypy
-
-Type-checks Python code.
-
-**Default (check only):**
-```bash
-mypy --no-strict-optional --ignore-missing-imports .
-```
-
-**With fixes (check only):**
-```bash
-mypy --no-strict-optional --ignore-missing-imports .
-```
-
-Note: mypy doesn't automatically fix issues in either configuration.
-
-### pyupgrade (with-fixes only)
-
+#### pyupgrade (with-fixes only)
 Upgrades Python syntax to newer versions.
 
 **With fixes:**
@@ -269,8 +198,7 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml pyupgrade --all-files
 find . -name "*.py" | xargs pyupgrade --py38-plus
 ```
 
-### ruff (with-fixes only)
-
+#### ruff (with-fixes only)
 Fast Python linter with automatic fixes.
 
 **With fixes:**
