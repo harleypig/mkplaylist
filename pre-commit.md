@@ -50,19 +50,26 @@ if it's on a protected branch.
 
 Removes trailing whitespace at the end of lines.
 
-**Default (check only):**
+**Note:** This hook always modifies files in both configurations.
+
+**Default (will modify files):**
 ```bash
 pre-commit run trailing-whitespace --all-files
 ```
 
-**With fixes:**
+**With fixes (same behavior):**
 ```bash
 pre-commit run --config .pre-commit-config-with-fixes.yaml trailing-whitespace --all-files
 ```
 
-**Direct command (with fixes):**
+**Direct command:**
 ```bash
 find . -type f -not -path "*/\.*" -not -path "*/venv/*" | xargs sed -i 's/[[:space:]]*$//'
+```
+
+**Check-only alternative:**
+```bash
+find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec grep -l "[[:space:]]$" {} \;
 ```
 
 ### end-of-file-fixer
