@@ -1,11 +1,12 @@
-# Pre-commit Hooks Guide
+# `pre-commit` Hooks Guide
 
-This guide explains how to run each pre-commit hook manually from the command line for debugging purposes. There are two configurations available:
+This guide explains how to run each `pre-commit` hook manually from the command
+line for debugging purposes. There are two configurations available:
 
 1. **Default Configuration** (`.pre-commit-config.yaml`): Checks code without making changes
 2. **With-Fixes Configuration** (`.pre-commit-config-with-fixes.yaml`): Can modify code to fix issues
 
-## Running Pre-commit
+## Running `pre-commit`
 
 ### All Hooks
 
@@ -52,19 +53,25 @@ if it's on a protected branch.
 
 #### check-files
 
-Checks for both trailing whitespace and missing final newlines without modifying files.
+Checks for both trailing whitespace and missing final newlines without
+modifying files.
+
+This hook runs from the default configuration (`.pre-commit-config.yaml`).
 
 ```bash
 ./scripts/check-files.sh
 ```
 
-Note: This custom hook was created because the standard trailing-whitespace and 
+Note: This custom hook was created because the standard trailing-whitespace and
 end-of-file-fixer hooks don't have check-only options. This hook only reports issues
 without modifying files.
 
 ### Validation-Only Hooks
 
 These hooks only check for issues and never modify files in either configuration.
+
+See the `Running pre-commit` section above for details on how to run these
+hooks via `pre-commit`.
 
 #### check-yaml
 Validates YAML files.
@@ -107,7 +114,9 @@ grep -r "import pdb\|import ipdb\|breakpoint()" --include="*.py" .
 ```
 
 #### check-case-conflict
-Checks for files with names that would conflict on a case-insensitive filesystem.
+Checks for files with names that would conflict on a case-insensitive
+filesystem.
+
 
 #### flake8
 Lints Python files with flake8.
@@ -131,7 +140,8 @@ Note: mypy doesn't automatically fix issues in either configuration.
 
 ### Check-Only in Default, Fix in With-Fixes
 
-These hooks check for issues in the default configuration but can modify files to fix issues when run with the with-fixes configuration.
+These hooks check for issues in the default configuration but can modify files
+to fix issues when run with the with-fixes configuration.
 
 #### trailing-whitespace (with-fixes only)
 Removes trailing whitespace at the end of lines.
