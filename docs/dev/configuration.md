@@ -61,6 +61,7 @@ and status methods.
 ## Main Configuration
 
 The `MkPlaylistConfig` class in `__init__.py` brings everything together:
+
 - Loads service-specific configurations
 - Provides access to all configuration values
 - Combines validation and status results from all services
@@ -113,11 +114,15 @@ To add a new service configuration:
 4. Implement the required `service_name` property
 5. Define any service-specific validation rules in the same file
 
-The new service will be automatically discovered and loaded by the main configuration class. You don't need to modify any other files.
+The new service will be automatically discovered and loaded by the main
+configuration class. You don't need to modify any other files.
 
 ### Example: Creating a Custom Service Configuration
 
-Below is an example of how to create a custom service configuration for a music service like Deezer. Note that **Deezer is not part of the core package** but is shown here as an example of how to extend the configuration system for your own needs.
+Below is an example of how to create a custom service configuration for
+a music service like Deezer. Note that **Deezer is not part of the core
+package** but is shown here as an example of how to extend the configuration
+system for your own needs.
 
 ### Using the API
 
@@ -137,20 +142,27 @@ from mkplaylist.config.base import ServiceConfig, ValidationRules, required, is_
 
 # Service-specific validation rules
 
+
 # Deezer-specific validation rules
 def is_valid_app_id(value: str) -> Tuple[bool, str]:
-    """Validate that a value is a valid Application ID."""
-    if not value:
-        return False, "Application ID cannot be empty"
-    try:
-        app_id = int(value)
-        if app_id <= 0:
-            return False, "Application ID must be a positive integer"
-        return True, ""
-    except ValueError:
-        return False, "Application ID must be a valid integer"
+  """Validate that a value is a valid Application ID."""
+  if not value:
+    return False, "Application ID cannot be empty"
+
+  try:
+    app_id = int(value)
+
+    if app_id <= 0:
+      return False, "Application ID must be a positive integer"
+
+    return True, ""
+
+  except ValueError:
+    return False, "Application ID must be a valid integer"
+
 
 class MyServiceConfig(ServiceConfig):
+
   """Deezer-specific validation for app IDs."""
   """Validate that a value is a valid Deezer Application ID."""
   if not value:
@@ -160,6 +172,7 @@ class MyServiceConfig(ServiceConfig):
     app_id = int(value)
     if app_id <= 0:
       return False, "Deezer Application ID must be a positive integer"
+
     return True, ""
 
   except ValueError:
@@ -167,33 +180,33 @@ class MyServiceConfig(ServiceConfig):
 
 
 class DeezerConfig(ServiceConfig):
+
   """
-    Deezer configuration class for mkplaylist.
-    """
-    Custom service configuration class for mkplaylist.
-    """
-    
-    @property
-    def service_name(self) -> str:
-        """Get the name of the service."""
-        return 'myservice'
+  Deezer configuration class for mkplaylist.
+  Custom service configuration class for mkplaylist.
+  """
 
-    def __init__(self):
-        super().__init__()
+  @property
+  def service_name(self) -> str:
+    """Get the name of the service."""
+    return 'myservice'
 
-        # Load API credentials
-        self.APP_ID = self.get_env('MYSERVICE_APP_ID', '')
-        self.APP_SECRET = self.get_env('MYSERVICE_APP_SECRET', '')
-        self.REDIRECT_URI = self.get_env(
-            'MYSERVICE_REDIRECT_URI', 'http://localhost:8888/callback'
-        )
+  def __init__(self):
+    super().__init__()
 
-        # Define validation rules
-        self.validation_rules: ValidationRules = {
-            'APP_ID': [required, is_valid_app_id],
-            'APP_SECRET': [required],
-            'REDIRECT_URI': [required, is_url],
-        }
+    # Load API credentials
+    self.APP_ID = self.get_env('MYSERVICE_APP_ID', '')
+    self.APP_SECRET = self.get_env('MYSERVICE_APP_SECRET', '')
+    self.REDIRECT_URI = self.get_env(
+      'MYSERVICE_REDIRECT_URI', 'http://localhost:8888/callback'
+    )
+
+    # Define validation rules
+    self.validation_rules: ValidationRules = {
+      'APP_ID': [required, is_valid_app_id],
+      'APP_SECRET': [required],
+      'REDIRECT_URI': [required, is_url],
+    }
 
   @property
   def service_name(self) -> str:
@@ -224,61 +237,61 @@ class DeezerConfig(ServiceConfig):
 When adding a new service, follow this pattern by defining any
 service-specific validation rules in the service's configuration module.
 
-```
-    def validate(self) -> Dict[str, str]:
-        # Get values to validate
-        values = {
-            'APP_ID': self.APP_ID,
-            'APP_SECRET': self.APP_SECRET,
-            'REDIRECT_URI': self.REDIRECT_URI,
-        }
+```python
+  def validate(self) -> Dict[str, str]:
+    # Get values to validate
+    values = {
+      'APP_ID': self.APP_ID,
+      'APP_SECRET': self.APP_SECRET,
+      'REDIRECT_URI': self.REDIRECT_URI,
+    }
 
-        # Validate using rules
-        issues = self._validate_with_rules(values, self.validation_rules)
+    # Validate using rules
+    issues = self._validate_with_rules(values, self.validation_rules)
 
-        # Map internal keys to user-friendly keys
-        user_friendly_issues = {}
-        key_mapping = {
-            'APP_ID': 'myservice_app_id',
-            'APP_SECRET': 'myservice_app_secret',
-            'REDIRECT_URI': 'myservice_redirect_uri',
-        }
+    # Map internal keys to user-friendly keys
+    user_friendly_issues = {}
+    key_mapping = {
+      'APP_ID': 'myservice_app_id',
+      'APP_SECRET': 'myservice_app_secret',
+      'REDIRECT_URI': 'myservice_redirect_uri',
+    }
 
-        for key, message in issues.items():
-            user_friendly_key = key_mapping.get(key, key)
-            user_friendly_issues[user_friendly_key] = message
+    for key, message in issues.items():
+      user_friendly_key = key_mapping.get(key, key)
+      user_friendly_issues[user_friendly_key] = message
 
-        return user_friendly_issues
+      return user_friendly_issues
 
-        # Implementation similar to other service configs
-        # ...
-        pass
+    # Implementation similar to other service configs
+    # ...
+    pass
 
-    def status(self) -> Dict[str, bool]:
-        # Implementation similar to other service configs
-        # Validate each credential individually
-        app_id_valid = all(rule(self.APP_ID)[0] for rule in self.validation_rules['APP_ID'])
-        app_secret_valid = all(rule(self.APP_SECRET)[0] for rule in self.validation_rules['APP_SECRET'])
-        redirect_uri_valid = all(rule(self.REDIRECT_URI)[0] for rule in self.validation_rules['REDIRECT_URI'])
+  def status(self) -> Dict[str, bool]:
+    # Implementation similar to other service configs
+    # Validate each credential individually
+    app_id_valid = all(rule(self.APP_ID)[0] for rule in self.validation_rules['APP_ID'])
+    app_secret_valid = all(rule(self.APP_SECRET)[0] for rule in self.validation_rules['APP_SECRET'])
+    redirect_uri_valid = all(rule(self.REDIRECT_URI)[0] for rule in self.validation_rules['REDIRECT_URI'])
 
-        return {
-            'app_id_configured': app_id_valid,
-            'app_secret_configured': app_secret_valid,
-            'redirect_uri_configured': redirect_uri_valid,
-        }
+    return {
+      'app_id_configured': app_id_valid,
+      'app_secret_configured': app_secret_valid,
+      'redirect_uri_configured': redirect_uri_valid,
+    }
 
-        # ...
-        pass
+    # ...
+    pass
 
-    def status(self) -> Dict[str, bool]:
-        # Implementation similar to other service configs
-        # ...
-        pass
+  def status(self) -> Dict[str, bool]:
+    # Implementation similar to other service configs
+    # ...
+    pass
 
-    def sources(self) -> Dict[str, str]:
-        # Implementation similar to other service configs
-        # ...
-        pass
+  def sources(self) -> Dict[str, str]:
+    # Implementation similar to other service configs
+    # ...
+    pass
 ```
 
 Note how the service-specific validation rule `is_valid_app_id` is defined in
@@ -294,7 +307,11 @@ Every service configuration class must:
 3. **Implement Required Methods**: Provide implementations for `validate()`, `status()`, and `sources()`
 4. **Define Validation Rules**: Set up appropriate validation rules for configuration values
 
-When defining configuration attributes in your service configuration class, you should use uppercase names to match the environment variable naming convention. However, users of your configuration class will be able to access these attributes using either uppercase or lowercase names, thanks to the `__getattr__` method in the `ServiceConfig` base class.
+When defining configuration attributes in your service configuration class,
+you should use uppercase names to match the environment variable naming
+convention. However, users of your configuration class will be able to access
+these attributes using either uppercase or lowercase names, thanks to the
+`__getattr__` method in the `ServiceConfig` base class.
 
 For example, if you define:
 
@@ -308,9 +325,6 @@ For example, if you define:
 ### Accessing Service Configurations
 
 Once a service configuration is loaded, it can be accessed in several ways:
-
-```python
-self.API_KEY = self.get_env('MYSERVICE_API_KEY', '')
 
 ```python
 from mkplaylist.config import config
@@ -384,7 +398,7 @@ from mkplaylist.config import validate
 # Check if configuration is valid
 issues = validate()
 if issues:
-    print("Validation issues:", issues)
+  print("Validation issues:", issues)
   print("Validation issues:", issues)
   print("Configuration issues found:")
 
@@ -393,8 +407,6 @@ if issues:
 
 else:
     print("Validation passed!")
-
-  print("Validation passed!")
 
 # Test status
 status = myservice_config.status()
@@ -413,8 +425,6 @@ assert myservice_config.APP_ID == myservice_config.app_id  # Both should be equa
 print("Uppercase access:", deezer_config.APP_ID)
 print("Lowercase access:", deezer_config.app_id)
 assert deezer_config.APP_ID == deezer_config.app_id  # Both should be equal
-```
-
 ```
 
 ### Troubleshooting
@@ -605,13 +615,13 @@ By placing service-specific validation rules in their respective service modules
 4. The codebase remains modular and follows the principle of separation of concerns
 
 #### 6. Practical Examples
-    
+
+```
 self.validation_rules = {
   'API_KEY': [required, exact_length(32), is_hexadecimal],
   # ...
 }
 ```
-
 
 #### 3. Extensibility
 
@@ -711,7 +721,6 @@ grow with the application's needs while maintaining clean, maintainable code.
 The configuration system includes CLI commands for viewing and validating
 configuration:
 
-
 ```bash
 # Show configuration status
 mkplaylist config status
@@ -787,8 +796,6 @@ Configuration Paths:
   State directory: /home/user/.local/state/mkplaylist
   Database path: /home/user/.local/share/mkplaylist/mkplaylist.db
 ```
-    
-```
 
 These commands provide a convenient way to check the configuration status and identify any issues.
 
@@ -803,6 +810,3 @@ When working with the configuration system, follow these best practices:
 5. **Document Configuration**: Document all configuration values and their purpose
 6. **Use Type Hints**: Use type hints for all configuration values
 7. **Follow Naming Conventions**: Use consistent naming conventions for environment variables
-
-
-

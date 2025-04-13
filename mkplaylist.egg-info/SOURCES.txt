@@ -2,7 +2,6 @@ README.md
 setup.py
 mkplaylist/__init__.py
 mkplaylist/cli.py
-mkplaylist/config.py
 mkplaylist.egg-info/PKG-INFO
 mkplaylist.egg-info/SOURCES.txt
 mkplaylist.egg-info/dependency_links.txt
