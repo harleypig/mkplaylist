@@ -46,18 +46,18 @@ you try to commit directly to master/main.
 Note: This hook doesn't make any changes to files. It simply blocks the commit
 if it's on a protected branch.
 
-### check-trailing-whitespace
+### check-files
 
-Checks for trailing whitespace at the end of lines without modifying files.
+Checks for both trailing whitespace and missing final newlines without modifying files.
 
 **Default (check only):**
 ```bash
-pre-commit run check-trailing-whitespace --all-files
+pre-commit run check-files --all-files
 ```
 
 **Direct command (check only):**
 ```bash
-find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec grep -l "[[:space:]]$" {} \;
+./scripts/check-files.sh
 ```
 
 ### trailing-whitespace (with-fixes only)
@@ -72,20 +72,6 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml trailing-whitespace -
 **Direct command (with fixes):**
 ```bash
 find . -type f -not -path "*/\.*" -not -path "*/venv/*" | xargs sed -i 's/[[:space:]]*$//'
-```
-
-### check-end-of-file
-
-Checks for files that don't end with a newline without modifying them.
-
-**Default (check only):**
-```bash
-pre-commit run check-end-of-file --all-files
-```
-
-**Direct command (check only):**
-```bash
-find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec sh -c 'if [ -n "$(tail -c 1 "{}")" ]; then echo "{}"; fi' \;
 ```
 
 ### end-of-file-fixer (with-fixes only)

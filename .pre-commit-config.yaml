@@ -15,17 +15,12 @@ repos:
 
   - repo: local
     hooks:
-      - id: check-trailing-whitespace
-        name: Check for trailing whitespace
-        entry: bash -c 'find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec grep -l "[[:space:]]$" {} \; | grep -v "\.md$" && echo "Trailing whitespace found" && exit 1 || exit 0'
-        language: system
-        types: [text]
-        
-      - id: check-end-of-file
-        name: Check for missing final newline
-        entry: bash -c 'find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec sh -c "if [ -n \"$(tail -c 1 \"{}\")" ]; then echo \"{}\" && exit 1; fi" \; || exit 0'
-        language: system
-        types: [text]
+      - id: check-files
+        name: Check for trailing whitespace and missing newlines
+        entry: scripts/check-files.sh
+        language: script
+        pass_filenames: false
+        # This hook checks all files for trailing whitespace and missing newlines
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
