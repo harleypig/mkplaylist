@@ -62,12 +62,6 @@ repos:
         # Only check, don't modify
         args: [--no-strict-optional, --ignore-missing-imports]
 
-  - repo: https://github.com/thlorenz/doctoc
-    rev: v2.2.0
-    hooks:
-      - id: doctoc
-        args: [--title, "## Table of Contents", --maxlevel, "2"]
-        # This will check if the TOC is up to date, but won't modify files
 
 # Configuration is compatible with existing .flake8 and .style.yapf files
 # This configuration only performs checks and does not modify any files

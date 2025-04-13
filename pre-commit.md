@@ -224,17 +224,14 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml ruff --all-files
 ruff check --fix .
 ```
 
-#### doctoc
+#### doctoc (with-fixes only)
 Generates or updates a table of contents for markdown files.
 
-**Default (check only):**
-```bash
-doctoc --title "## Table of Contents" --maxlevel 4 --check pre-commit.md
-```
+**Note:** This hook is only available in the with-fixes configuration as doctoc doesn't have a check-only option.
 
 **With fixes:**
 ```bash
-doctoc --title "## Table of Contents" --maxlevel 4 pre-commit.md
+doctoc --title "## Table of Contents" --maxlevel 2 pre-commit.md
 ```
 
 ## Tips for Debugging
