@@ -1,4 +1,3 @@
-
 """
 Spotify configuration module for mkplaylist.
 
@@ -6,14 +5,20 @@ This module provides Spotify-specific configuration, including API credentials
 and validation.
 """
 
+# Starfleet Protocols
 import logging
-import re
-from typing import Dict, Any, List, Tuple
 
-from mkplaylist.config.base import ServiceConfig, ValidationRules, required, exact_length, pattern, is_url
+from typing import Dict
+from typing import Tuple
+
+# Engineering Core Modules
+from mkplaylist.config.base import required
+from mkplaylist.config.base import ServiceConfig
+from mkplaylist.config.base import ValidationRules
 
 # Set up logging
 logger = logging.getLogger(__name__)
+
 
 # Spotify-specific validation rules
 def is_valid_client_id(value: str) -> Tuple[bool, str]:
@@ -26,6 +31,7 @@ def is_valid_client_id(value: str) -> Tuple[bool, str]:
         return False, "Spotify Client ID must contain only alphanumeric characters"
     return True, ""
 
+
 def is_valid_client_secret(value: str) -> Tuple[bool, str]:
     """Validate that a value is a valid Spotify Client Secret."""
     if not value:
@@ -36,13 +42,15 @@ def is_valid_client_secret(value: str) -> Tuple[bool, str]:
         return False, "Spotify Client Secret must contain only alphanumeric characters"
     return True, ""
 
+
 def is_valid_redirect_uri(value: str) -> Tuple[bool, str]:
     """Validate that a value is a valid Spotify Redirect URI."""
     if not value:
         return False, "Spotify Redirect URI cannot be empty"
-    if not value.startswith(('http://', 'https://')):
+    if not value.startswith(("http://", "https://")):
         return False, "Spotify Redirect URI must start with http:// or https://"
     return True, ""
+
 
 class SpotifyConfig(ServiceConfig):
     """
@@ -60,7 +68,7 @@ class SpotifyConfig(ServiceConfig):
         Returns:
             str: The name of the service ('spotify')
         """
-        return 'spotify'
+        return "spotify"
 
     def __init__(self):
         """
@@ -72,17 +80,17 @@ class SpotifyConfig(ServiceConfig):
         super().__init__()
 
         # Load Spotify API credentials
-        self.CLIENT_ID = self.get_env('SPOTIFY_CLIENT_ID', '')
-        self.CLIENT_SECRET = self.get_env('SPOTIFY_CLIENT_SECRET', '')
+        self.CLIENT_ID = self.get_env("SPOTIFY_CLIENT_ID", "")
+        self.CLIENT_SECRET = self.get_env("SPOTIFY_CLIENT_SECRET", "")
         self.REDIRECT_URI = self.get_env(
-            'SPOTIFY_REDIRECT_URI', 'http://localhost:8888/callback'
+            "SPOTIFY_REDIRECT_URI", "http://localhost:8888/callback"
         )
 
         # Define validation rules
         self.validation_rules: ValidationRules = {
-            'CLIENT_ID': [required, is_valid_client_id],
-            'CLIENT_SECRET': [required, is_valid_client_secret],
-            'REDIRECT_URI': [required, is_valid_redirect_uri],
+            "CLIENT_ID": [required, is_valid_client_id],
+            "CLIENT_SECRET": [required, is_valid_client_secret],
+            "REDIRECT_URI": [required, is_valid_redirect_uri],
         }
 
     def validate(self) -> Dict[str, str]:
@@ -97,9 +105,9 @@ class SpotifyConfig(ServiceConfig):
         """
         # Get values to validate
         values = {
-            'CLIENT_ID': self.CLIENT_ID,
-            'CLIENT_SECRET': self.CLIENT_SECRET,
-            'REDIRECT_URI': self.REDIRECT_URI,
+            "CLIENT_ID": self.CLIENT_ID,
+            "CLIENT_SECRET": self.CLIENT_SECRET,
+            "REDIRECT_URI": self.REDIRECT_URI,
         }
 
         # Validate using rules
@@ -108,9 +116,9 @@ class SpotifyConfig(ServiceConfig):
         # Map internal keys to user-friendly keys
         user_friendly_issues = {}
         key_mapping = {
-            'CLIENT_ID': 'spotify_client_id',
-            'CLIENT_SECRET': 'spotify_client_secret',
-            'REDIRECT_URI': 'spotify_redirect_uri',
+            "CLIENT_ID": "spotify_client_id",
+            "CLIENT_SECRET": "spotify_client_secret",
+            "REDIRECT_URI": "spotify_redirect_uri",
         }
 
         for key, message in issues.items():
@@ -131,14 +139,21 @@ class SpotifyConfig(ServiceConfig):
                              True indicates the item is properly configured.
         """
         # Validate each credential individually
-        client_id_valid = all(rule(self.CLIENT_ID)[0] for rule in self.validation_rules['CLIENT_ID'])
-        client_secret_valid = all(rule(self.CLIENT_SECRET)[0] for rule in self.validation_rules['CLIENT_SECRET'])
-        redirect_uri_valid = all(rule(self.REDIRECT_URI)[0] for rule in self.validation_rules['REDIRECT_URI'])
+        client_id_valid = all(
+            rule(self.CLIENT_ID)[0] for rule in self.validation_rules["CLIENT_ID"]
+        )
+        client_secret_valid = all(
+            rule(self.CLIENT_SECRET)[0]
+            for rule in self.validation_rules["CLIENT_SECRET"]
+        )
+        redirect_uri_valid = all(
+            rule(self.REDIRECT_URI)[0] for rule in self.validation_rules["REDIRECT_URI"]
+        )
 
         return {
-            'client_id_configured': client_id_valid,
-            'client_secret_configured': client_secret_valid,
-            'redirect_uri_configured': redirect_uri_valid,
+            "client_id_configured": client_id_valid,
+            "client_secret_configured": client_secret_valid,
+            "redirect_uri_configured": redirect_uri_valid,
         }
 
     def sources(self) -> Dict[str, str]:
@@ -156,7 +171,7 @@ class SpotifyConfig(ServiceConfig):
                             ".env file (overriding environment variable)", or "Default value".
         """
         return {
-            'SPOTIFY_CLIENT_ID': self.source('SPOTIFY_CLIENT_ID'),
-            'SPOTIFY_CLIENT_SECRET': self.source('SPOTIFY_CLIENT_SECRET'),
-            'SPOTIFY_REDIRECT_URI': self.source('SPOTIFY_REDIRECT_URI'),
+            "SPOTIFY_CLIENT_ID": self.source("SPOTIFY_CLIENT_ID"),
+            "SPOTIFY_CLIENT_SECRET": self.source("SPOTIFY_CLIENT_SECRET"),
+            "SPOTIFY_REDIRECT_URI": self.source("SPOTIFY_REDIRECT_URI"),
         }

@@ -1,4 +1,3 @@
-
 # Secondary pre-commit configuration for mkplaylist
 # This configuration can modify code and should be run manually
 # To use this configuration, run:
@@ -23,7 +22,6 @@ repos:
     hooks:
       - id: trailing-whitespace
         args: [--markdown-linebreak-ext=md]
-      - id: end-of-file-fixer
       - id: check-yaml
       - id: check-toml
       - id: check-merge-conflict
@@ -34,8 +32,8 @@ repos:
     rev: 5.12.0
     hooks:
       - id: isort
-        args: [--profile=black]
-        # Will modify files to sort imports
+        args: [--jobs=-1]
+        # Will modify files to sort imports, use all cpus
 
   - repo: https://github.com/psf/black
     rev: 23.3.0

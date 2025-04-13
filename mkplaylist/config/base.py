@@ -8,11 +8,7 @@ configurations will extend.
 import logging
 import os
 from pathlib import Path
-from typing import (
-  Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
-)
-
-
+from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
       return False, f"Expected string, got {type(value).__name__}"
     if len(value) < min_len:

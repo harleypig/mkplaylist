@@ -1,6 +1,6 @@
-
 # Default pre-commit configuration for mkplaylist
 # This configuration only checks code without making changes
+
 repos:
   # Branch protection hook - runs first to fail fast
   - repo: local
@@ -37,8 +37,8 @@ repos:
     rev: 6.0.1
     hooks:
       - id: isort
-        args: [--check-only, --profile=black]
-        # Only check, don't modify
+        args: [ --check, --jobs=-1 ]
+        # Only check, don't modify, use all cpus
 
   - repo: https://github.com/psf/black
     rev: 25.1.0

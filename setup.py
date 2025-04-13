@@ -1,28 +1,31 @@
-
-from setuptools import setup, find_packages
+# Starfleet Protocols
 import os
+
+# Non-Federation Tech
+from setuptools import setup
+from setuptools import find_packages
 
 # Read the long description from README.md if it exists
 long_description = ""
 if os.path.exists("README.md"):
-    with open("README.md", "r", encoding="utf-8") as fh:
-        long_description = fh.read()
+  with open("README.md", encoding="utf-8") as fh:
+    long_description = fh.read()
 
 setup(
   name="mkplaylist",
-  version="0.1.0",
-  description="Create Spotify playlists based on custom criteria using Last.fm data",
+  version="0.0.1",
+  description=
+  "Create Spotify playlists based on custom criteria using Last.fm data",
   long_description=long_description,
   long_description_content_type="text/markdown",
   author="harleypig",
-  author_email="harleypig@gmail.com",
+  author_email="harleypig@harleypig.com",
   url="https://github.com/harleypig/mkplaylist",
   project_urls={
-      "Bug Tracker": "https://github.com/harleypig/mkplaylist/issues",
-      "Documentation": "https://github.com/harleypig/mkplaylist/tree/main/docs",
-      "Source Code": "https://github.com/harleypig/mkplaylist",
+    "Bug Tracker": "https://github.com/harleypig/mkplaylist/issues",
+    "Documentation": "https://github.com/harleypig/mkplaylist/tree/main/docs",
+    "Source Code": "https://github.com/harleypig/mkplaylist",
   },
-
   packages=find_packages(),
   include_package_data=True,
   install_requires=[
@@ -55,6 +58,8 @@ setup(
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
     "Topic :: Multimedia :: Sound/Audio",
   ],
 )
