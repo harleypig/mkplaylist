@@ -190,12 +190,12 @@ Formats Python code according to the style defined in `.style.yapf`.
 
 **Default (check only):**
 ```bash
-yapf --diff --recursive .
+yapf --diff --recursive --exclude=venv/* .
 ```
 
 **With fixes:**
 ```bash
-yapf --in-place --recursive .
+yapf --in-place --recursive --exclude=venv/* .
 ```
 
 #### pyupgrade (with-fixes only)

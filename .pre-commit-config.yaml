@@ -48,7 +48,7 @@ repos:
     rev: v0.32.0
     hooks:
       - id: yapf
-        args: [--diff, --recursive]
+        args: [--diff, --recursive, --exclude=venv/*]
         # Only check, don't modify
         # Uses the project's .style.yapf configuration
 

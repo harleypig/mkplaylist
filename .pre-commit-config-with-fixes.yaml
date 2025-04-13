@@ -40,6 +40,7 @@ repos:
     rev: v0.32.0
     hooks:
       - id: yapf
+        args: [--exclude=venv/*]
         # Will modify files to format code according to .style.yapf
 
   - repo: https://github.com/pycqa/flake8
