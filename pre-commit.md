@@ -46,42 +46,58 @@ you try to commit directly to master/main.
 Note: This hook doesn't make any changes to files. It simply blocks the commit
 if it's on a protected branch.
 
-### trailing-whitespace
+### check-trailing-whitespace
 
-Removes trailing whitespace at the end of lines.
+Checks for trailing whitespace at the end of lines without modifying files.
 
-**Note:** This hook always modifies files in both configurations.
-
-**Default (will modify files):**
+**Default (check only):**
 ```bash
-pre-commit run trailing-whitespace --all-files
+pre-commit run check-trailing-whitespace --all-files
 ```
 
-**With fixes (same behavior):**
-```bash
-pre-commit run --config .pre-commit-config-with-fixes.yaml trailing-whitespace --all-files
-```
-
-**Direct command:**
-```bash
-find . -type f -not -path "*/\.*" -not -path "*/venv/*" | xargs sed -i 's/[[:space:]]*$//'
-```
-
-**Check-only alternative:**
+**Direct command (check only):**
 ```bash
 find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec grep -l "[[:space:]]$" {} \;
 ```
 
-### end-of-file-fixer
+### trailing-whitespace (with-fixes only)
 
-Ensures files end with a newline.
+Removes trailing whitespace at the end of lines.
+
+**With fixes (will modify files):**
+```bash
+pre-commit run --config .pre-commit-config-with-fixes.yaml trailing-whitespace --all-files
+```
+
+**Direct command (with fixes):**
+```bash
+find . -type f -not -path "*/\.*" -not -path "*/venv/*" | xargs sed -i 's/[[:space:]]*$//'
+```
+
+### check-end-of-file
+
+Checks for files that don't end with a newline without modifying them.
 
 **Default (check only):**
 ```bash
-pre-commit run end-of-file-fixer --all-files
+pre-commit run check-end-of-file --all-files
 ```
 
-**Direct command:**
+**Direct command (check only):**
+```bash
+find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec sh -c 'if [ -n "$(tail -c 1 "{}")" ]; then echo "{}"; fi' \;
+```
+
+### end-of-file-fixer (with-fixes only)
+
+Ensures files end with a newline by modifying them.
+
+**With fixes (will modify files):**
+```bash
+pre-commit run --config .pre-commit-config-with-fixes.yaml end-of-file-fixer --all-files
+```
+
+**Direct command (with fixes):**
 ```bash
 find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec sh -c 'if [ -n "$(tail -c 1 "{}")" ]; then echo >> "{}"; fi' \;
 ```

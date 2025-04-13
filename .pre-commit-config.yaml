@@ -13,13 +13,23 @@ repos:
         # This hook runs regardless of which files are being committed
         # It checks the current branch name and blocks commits to master/main
 
+  - repo: local
+    hooks:
+      - id: check-trailing-whitespace
+        name: Check for trailing whitespace
+        entry: bash -c 'find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec grep -l "[[:space:]]$" {} \; | grep -v "\.md$" && echo "Trailing whitespace found" && exit 1 || exit 0'
+        language: system
+        types: [text]
+        
+      - id: check-end-of-file
+        name: Check for missing final newline
+        entry: bash -c 'find . -type f -not -path "*/\.*" -not -path "*/venv/*" -exec sh -c "if [ -n \"$(tail -c 1 \"{}\")" ]; then echo \"{}\" && exit 1; fi" \; || exit 0'
+        language: system
+        types: [text]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-      - id: trailing-whitespace
-        args: [--markdown-linebreak-ext=md]
-        # Note: This hook always modifies files even in check-only config
-      - id: end-of-file-fixer
       - id: check-yaml
       - id: check-added-large-files
       - id: check-toml
