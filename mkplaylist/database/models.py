@@ -8,13 +8,9 @@ This module defines the SQLAlchemy ORM models for the database tables.
 from datetime import datetime
 
 # Non-Federation Tech
-from sqlalchemy import Column
-from sqlalchemy import String
-from sqlalchemy import Boolean
-from sqlalchemy import Integer
-from sqlalchemy import DateTime
-from sqlalchemy import ForeignKey
-from sqlalchemy import UniqueConstraint
+from sqlalchemy import (
+  Column, String, Boolean, Integer, DateTime, ForeignKey, UniqueConstraint,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 

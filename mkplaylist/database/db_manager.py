@@ -7,27 +7,19 @@ This module provides a class for managing database operations.
 # Starfleet Protocols
 import logging
 
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 
 # Non-Federation Tech
-from sqlalchemy import desc
-from sqlalchemy import func
-from sqlalchemy import create_engine
+from sqlalchemy import desc, func, create_engine
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 # Engineering Core Modules
 from mkplaylist import config
-from mkplaylist.database.models import Base
-from mkplaylist.database.models import Track
-from mkplaylist.database.models import Playlist
-from mkplaylist.database.models import PlaylistTrack
-from mkplaylist.database.models import ListeningHistory
+from mkplaylist.database.models import (
+  Base, Track, Playlist, PlaylistTrack, ListeningHistory,
+)
 
 logger = logging.getLogger(__name__)
 

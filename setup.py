@@ -2,8 +2,7 @@
 import os
 
 # Non-Federation Tech
-from setuptools import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 # Read the long description from README.md if it exists
 long_description = ""

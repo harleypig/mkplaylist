@@ -9,15 +9,11 @@ with service-specific configurations that are automatically discovered and loade
 import os
 import logging
 
-from typing import Dict
-from typing import List
-from typing import Type
-from typing import Optional
+from typing import Dict, List, Type, Optional
 
 # Engineering Core Modules
 # Export ServiceConfig for creating new service configurations
-from mkplaylist.config.base import BaseConfig
-from mkplaylist.config.base import ServiceConfig
+from mkplaylist.config.base import BaseConfig, ServiceConfig
 
 # Set up logging
 logger = logging.getLogger(__name__)

@@ -7,10 +7,7 @@ This module provides a client for interacting with the Last.fm API.
 # Starfleet Protocols
 import logging
 
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 
 # Non-Federation Tech

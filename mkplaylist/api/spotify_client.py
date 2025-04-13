@@ -8,10 +8,7 @@ This module provides a client for interacting with the Spotify API.
 import time
 import logging
 
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 # Non-Federation Tech
 import spotipy

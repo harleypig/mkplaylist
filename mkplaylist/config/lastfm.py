@@ -9,13 +9,10 @@ and validation.
 import re
 import logging
 
-from typing import Dict
-from typing import Tuple
+from typing import Dict, Tuple
 
 # Engineering Core Modules
-from mkplaylist.config.base import required
-from mkplaylist.config.base import ServiceConfig
-from mkplaylist.config.base import ValidationRules
+from mkplaylist.config.base import required, ServiceConfig, ValidationRules
 
 # Set up logging
 logger = logging.getLogger(__name__)

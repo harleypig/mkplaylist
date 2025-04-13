@@ -5,17 +5,22 @@ This module provides the base configuration class that service-specific
 configurations will extend.
 """
 
-import logging
+# Starfleet Protocols
 import os
+import logging
+
+from typing import (
+  Any,
+  Dict,
+  List,
+  Type,
+  Tuple,
+  Union,
+  TypeVar,
+  Callable,
+  Optional,
+)
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union
-
-      return False, f"Expected string, got {type(value).__name__}"
-    if len(value) < min_len:
-      return False, f"Value must be at least {min_len} characters long"
-    return True, ""
-
-  return validator
 
 
 def max_length(max_len: int) -> ValidationRule:
@@ -46,6 +51,7 @@ def exact_length(length: int) -> ValidationRule:
 
 def pattern(regex: str, description: str) -> ValidationRule:
   """Create a validator that checks if a string matches a regex pattern."""
+  # Starfleet Protocols
   import re
   compiled_regex = re.compile(regex)
 
@@ -112,14 +118,6 @@ def is_directory(value: Path) -> Tuple[bool, str]:
 
 
 def one_of(options: List[Any]) -> ValidationRule:
-    """Create a validator that checks if a value is one of the given options."""
-    def validator(value: Any) -> Tuple[bool, str]:
-        if value not in options:
-            return False, f"Value must be one of: {', '.join(str(o) for o in options)}"
-        return True, ""
-    return validator
-
-
   """Create a validator that checks if a value is one of the given options."""
 
   def validator(value: Any) -> Tuple[bool, str]:
@@ -129,8 +127,18 @@ def one_of(options: List[Any]) -> ValidationRule:
 
   return validator
 
+
+def validator(value: Any) -> Tuple[bool, str]:
+  if value not in options:
+    return False, f"Value must be one of: {', '.join(str(o) for o in options)}"
+  return True, ""
+
+  return validator
+
+
 class ServiceConfig(BaseConfig):
-    """
+
+  """
     Abstract base class for service-specific configurations.
 
     This class defines the interface that all service configurations must implement.
@@ -169,9 +177,9 @@ class ServiceConfig(BaseConfig):
         ```
     """
 
-    @property
-    def service_name(self) -> str:
-        """
+  @property
+  def service_name(self) -> str:
+    """
         Get the name of the service.
 
         This property must be overridden by subclasses to provide the service name.
@@ -183,10 +191,12 @@ class ServiceConfig(BaseConfig):
         Raises:
             NotImplementedError: If the subclass does not override this property
         """
-        raise NotImplementedError("Service configurations must define a service_name property")
+    raise NotImplementedError(
+      "Service configurations must define a service_name property"
+    )
 
-    def validate(self) -> Dict[str, str]:
-        """
+  def validate(self) -> Dict[str, str]:
+    """
         Validate the service configuration and return any issues.
 
         This method must be implemented by subclasses to provide service-specific validation.
@@ -196,10 +206,10 @@ class ServiceConfig(BaseConfig):
             Dict[str, str]: A dictionary of configuration issues, with keys as issue identifiers
                             and values as error messages. Empty if all is valid.
         """
-        return {}
+    return {}
 
-    def status(self) -> Dict[str, bool]:
-        """
+  def status(self) -> Dict[str, bool]:
+    """
         Get the status of service configuration items.
 
         This method must be implemented by subclasses to provide service-specific status information.
@@ -209,10 +219,10 @@ class ServiceConfig(BaseConfig):
             Dict[str, bool]: A dictionary with configuration items as keys and their status as boolean values.
                              True indicates the item is properly configured.
         """
-        return {}
+    return {}
 
-    def sources(self) -> Dict[str, str]:
-        """
+  def sources(self) -> Dict[str, str]:
+    """
         Get information about where each service configuration value is coming from.
 
         This method must be implemented by subclasses to provide service-specific source information.
@@ -223,11 +233,10 @@ class ServiceConfig(BaseConfig):
                             Possible sources: "Environment variable", ".env file",
                             ".env file (overriding environment variable)", or "Default value".
         """
-        return {}
+    return {}
 
-
-    def __getattr__(self, name: str) -> Any:
-        """Get an attribute by name, supporting lowercase attribute access.
+  def __getattr__(self, name: str) -> Any:
+    """Get an attribute by name, supporting lowercase attribute access.
 
         This method is called when an attribute is not found through the normal attribute lookup process.
         It checks if an uppercase version of the attribute name exists, allowing for lowercase attribute access.
@@ -241,10 +250,13 @@ class ServiceConfig(BaseConfig):
         Raises:
             AttributeError: If the attribute does not exist in uppercase form.
         """
-        uppercase_name = name.upper()
-        if hasattr(self, uppercase_name):
-            return getattr(self, uppercase_name)
-        raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
+    uppercase_name = name.upper()
+    if hasattr(self, uppercase_name):
+      return getattr(self, uppercase_name)
+    raise AttributeError(
+      f"'{self.__class__.__name__}' object has no attribute '{name}'"
+    )
+
 
 class BaseConfig:
 

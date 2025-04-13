@@ -8,11 +8,8 @@ This module provides a parser for natural language-like criteria strings.
 import re
 import logging
 
-from typing import Any
-from typing import Dict
-from typing import List
-from datetime import datetime
-from datetime import timedelta
+from typing import Any, Dict, List
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 

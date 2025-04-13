@@ -7,11 +7,8 @@ This module provides a service for synchronizing data from Spotify and Last.fm.
 # Starfleet Protocols
 import logging
 
-from typing import Any
-from typing import Dict
-from typing import Optional
-from datetime import datetime
-from datetime import timedelta
+from typing import Any, Dict, Optional
+from datetime import datetime, timedelta
 
 # Engineering Core Modules
 from mkplaylist.api.lastfm_client import LastFmClient

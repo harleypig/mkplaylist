@@ -1,10 +1,10 @@
 Metadata-Version: 2.4
 Name: mkplaylist
-Version: 0.1.0
+Version: 0.0.1
 Summary: Create Spotify playlists based on custom criteria using Last.fm data
 Home-page: https://github.com/harleypig/mkplaylist
 Author: harleypig
-Author-email: harleypig@gmail.com
+Author-email: harleypig@harleypig.com
 Project-URL: Bug Tracker, https://github.com/harleypig/mkplaylist/issues
 Project-URL: Documentation, https://github.com/harleypig/mkplaylist/tree/main/docs
 Project-URL: Source Code, https://github.com/harleypig/mkplaylist
@@ -16,6 +16,8 @@ Classifier: Programming Language :: Python :: 3.7
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
 Classifier: Topic :: Multimedia :: Sound/Audio
 Requires-Python: >=3.7
 Description-Content-Type: text/markdown

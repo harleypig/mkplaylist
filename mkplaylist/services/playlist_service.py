@@ -7,10 +7,7 @@ This module provides a service for generating playlists based on criteria.
 # Starfleet Protocols
 import logging
 
-from typing import Any
-from typing import Dict
-from typing import List
-from typing import Optional
+from typing import Any, Dict, List, Optional
 
 # Engineering Core Modules
 from mkplaylist.api.spotify_client import SpotifyClient
