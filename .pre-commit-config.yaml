@@ -1,6 +1,18 @@
+
 # Default pre-commit configuration for mkplaylist
 # This configuration only checks code without making changes
 repos:
+  # Branch protection hook - runs first to fail fast
+  - repo: local
+    hooks:
+      - id: no-commit-to-master
+        name: Prevent commits to master/main branch
+        entry: scripts/no-commit-to-master.sh
+        language: script
+        pass_filenames: false
+        # This hook runs regardless of which files are being committed
+        # It checks the current branch name and blocks commits to master/main
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:

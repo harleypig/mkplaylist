@@ -337,11 +337,14 @@ Follow the [Conventional Commits](https://www.conventionalcommits.org/)
 specification:
 
 ```
+```
 <type>(<scope>): <description>
 
 [optional body]
 
 [optional footer]
+```
+
 ```
 
 Types:
@@ -355,12 +358,76 @@ Types:
 
 Example:
 ```
+```
 feat(parser): add support for artist criteria
 
 Add support for filtering tracks by artist in the query parser.
 This allows users to create playlists with tracks from specific artists.
 
 Closes #42
+```
+
+### Branch Protection
+
+To maintain code quality and ensure proper review processes, direct commits to the `master` and `main` branches are blocked by a pre-commit hook. This encourages a proper git workflow where all changes are made in feature branches and integrated through pull requests.
+
+#### Proper Git Workflow
+
+1. **Always work in a feature branch**:
+   ```bash
+   # Create a new branch for your feature or bugfix
+   git checkout -b feature/your-feature-name
+   # or
+   git checkout -b bugfix/issue-description
+   ```
+
+2. **Make your changes and commit them**:
+   ```bash
+   git add .
+   git commit -m "feat(component): add new feature"
+   ```
+
+3. **Push your branch to the remote repository**:
+   ```bash
+   git push -u origin feature/your-feature-name
+   ```
+
+4. **Create a pull request** from your feature branch to the `develop` branch.
+
+5. **After review and approval**, your changes will be merged into the `develop` branch.
+
+6. **Periodically, the `develop` branch** will be merged into `master` for releases.
+
+#### Branch Naming Conventions
+
+- `feature/xxx`: For new features (e.g., `feature/playlist-sorting`)
+- `bugfix/xxx`: For bug fixes (e.g., `bugfix/login-error`)
+- `docs/xxx`: For documentation changes (e.g., `docs/api-examples`)
+- `refactor/xxx`: For code refactoring (e.g., `refactor/query-parser`)
+- `test/xxx`: For adding or updating tests (e.g., `test/playlist-service`)
+
+#### Bypassing Branch Protection
+
+In exceptional cases, you may need to commit directly to the protected branches. This should be done **only when absolutely necessary** and with a clear understanding of why it's needed.
+
+To bypass the branch protection:
+
+1. **Using the `--no-verify` flag**:
+   ```bash
+   git commit -m "chore: critical hotfix" --no-verify
+   ```
+   This skips all pre-commit hooks, including the branch protection.
+
+2. **Temporarily disabling git hooks**:
+   ```bash
+   git -c core.hooksPath=/dev/null commit -m "chore: critical hotfix"
+   ```
+   This temporarily changes the hooks path to disable all hooks for this commit.
+
+3. **After making the direct commit**, please document why it was necessary in the commit message and inform the team.
+
+Remember that bypassing branch protection should be a rare exception, not a regular practice. The protection exists to maintain code quality and ensure proper review processes.
+
 ```
 
 ## Pull Request Process

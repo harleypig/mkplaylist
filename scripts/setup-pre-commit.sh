@@ -1,3 +1,4 @@
+
 #!/bin/bash
 # setup-pre-commit.sh - Install pre-commit hooks for mkplaylist
 #
@@ -36,6 +37,15 @@ if [ ! -f "$ROOT_DIR/.pre-commit-config-with-fixes.yaml" ]; then
     echo "The secondary configuration for making fixes will not be available."
 fi
 
+# Check if the no-commit-to-master hook script exists and make it executable
+if [ -f "$ROOT_DIR/scripts/no-commit-to-master.sh" ]; then
+    chmod +x "$ROOT_DIR/scripts/no-commit-to-master.sh"
+    echo "Made scripts/no-commit-to-master.sh executable."
+else
+    echo "Warning: scripts/no-commit-to-master.sh not found."
+    echo "The branch protection hook will not be available."
+fi
+
 echo "Installing pre-commit hooks with the default configuration..."
 cd "$ROOT_DIR"
 pre-commit install
@@ -59,4 +69,18 @@ if [ -f "$ROOT_DIR/.pre-commit-config-with-fixes.yaml" ]; then
     echo "      It should be run manually before committing, not as part of the git commit process."
 fi
 
+if [ -f "$ROOT_DIR/scripts/no-commit-to-master.sh" ]; then
+    echo ""
+    echo "Branch Protection:"
+    echo "  The no-commit-to-master hook will prevent direct commits to master/main branches."
+    echo "  This encourages proper git workflow using feature branches and pull requests."
+    echo ""
+    echo "  To bypass this protection in exceptional cases:"
+    echo "    git commit --no-verify"
+    echo ""
+    echo "  Or temporarily disable all hooks:"
+    echo "    git -c core.hooksPath=/dev/null commit"
+fi
+
 echo "Happy coding!"
+
