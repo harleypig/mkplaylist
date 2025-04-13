@@ -13,7 +13,7 @@ from typing import (
 )
 
 
-    
+
       return False, f"Expected string, got {type(value).__name__}"
     if len(value) < min_len:
       return False, f"Value must be at least {min_len} characters long"
@@ -136,92 +136,92 @@ def one_of(options: List[Any]) -> ValidationRule:
 class ServiceConfig(BaseConfig):
     """
     Abstract base class for service-specific configurations.
-    
+
     This class defines the interface that all service configurations must implement.
     It extends BaseConfig to inherit common configuration functionality.
-    
+
     Service configurations are automatically discovered and loaded by the main
     configuration class. To create a new service configuration, create a new module
     in the mkplaylist/config directory that defines a class extending ServiceConfig.
-    
+
     Example:
         ```python
         # mkplaylist/config/myservice.py
         from mkplaylist.config.base import ServiceConfig
-        
+
         class MyServiceConfig(ServiceConfig):
             @property
             def service_name(self) -> str:
                 return 'myservice'
-                
+
             def __init__(self):
                 super().__init__()
                 self.API_KEY = self.get_env('MYSERVICE_API_KEY', '')
                 # ...
-                
+
             def validate(self) -> Dict[str, str]:
                 # Implement validation
                 # ...
-                
+
             def status(self) -> Dict[str, bool]:
                 # Implement status
                 # ...
-                
+
             def sources(self) -> Dict[str, str]:
                 # Implement sources
                 # ...
         ```
     """
-    
+
     @property
     def service_name(self) -> str:
         """
         Get the name of the service.
-        
+
         This property must be overridden by subclasses to provide the service name.
         The service name should be lowercase and match the module name.
-        
+
         Returns:
             str: The name of the service (e.g., 'spotify', 'lastfm')
-        
+
         Raises:
             NotImplementedError: If the subclass does not override this property
         """
         raise NotImplementedError("Service configurations must define a service_name property")
-    
+
     def validate(self) -> Dict[str, str]:
         """
         Validate the service configuration and return any issues.
-        
+
         This method must be implemented by subclasses to provide service-specific validation.
         It should check that all required configuration values are set and properly formatted.
-        
+
         Returns:
             Dict[str, str]: A dictionary of configuration issues, with keys as issue identifiers
                             and values as error messages. Empty if all is valid.
         """
         return {}
-    
+
     def status(self) -> Dict[str, bool]:
         """
         Get the status of service configuration items.
-        
+
         This method must be implemented by subclasses to provide service-specific status information.
         It should provide a quick overview of which configuration components are properly set up.
-        
+
         Returns:
             Dict[str, bool]: A dictionary with configuration items as keys and their status as boolean values.
                              True indicates the item is properly configured.
         """
         return {}
-    
+
     def sources(self) -> Dict[str, str]:
         """
         Get information about where each service configuration value is coming from.
-        
+
         This method must be implemented by subclasses to provide service-specific source information.
         It helps users understand the configuration precedence.
-        
+
         Returns:
             Dict[str, str]: A dictionary with configuration items as keys and their sources as string values.
                             Possible sources: "Environment variable", ".env file",
@@ -249,7 +249,7 @@ class ServiceConfig(BaseConfig):
         if hasattr(self, uppercase_name):
             return getattr(self, uppercase_name)
         raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{name}'")
-    
+
 class BaseConfig:
 
   """
@@ -572,5 +572,3 @@ class BaseConfig:
     # Default path in data directory
     default_path = self.data_dir() / 'mkplaylist.db'
     return default_path
-
-

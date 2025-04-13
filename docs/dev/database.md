@@ -706,4 +706,3 @@ logging.getLogger('sqlalchemy.engine').setLevel(logging.INFO)
 
 This will log all SQL queries to the console, which can be helpful for
 debugging.
-

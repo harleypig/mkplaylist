@@ -5,12 +5,9 @@
 # and blocks the commit if it is. This encourages proper git workflow
 # where changes are made in feature branches and merged through pull requests.
 
-# Get the current branch name
-BRANCH_NAME=$(git symbolic-ref --short HEAD 2>/dev/null)
-if [ $? -ne 0 ]; then
-    # Not on any branch (detached HEAD state), allow the commit
-    exit 0
-fi
+# Get the current branch name. If exit code is 0, not on any branch (detached
+# HEAD state), allow the commit
+BRANCH_NAME=$(git symbolic-ref --short HEAD 2>/dev/null) || exit 0
 
 # List of protected branches
 PROTECTED_BRANCHES=("master" "main")

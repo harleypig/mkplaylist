@@ -22,7 +22,7 @@ setup(
       "Documentation": "https://github.com/harleypig/mkplaylist/tree/main/docs",
       "Source Code": "https://github.com/harleypig/mkplaylist",
   },
-    
+
   packages=find_packages(),
   include_package_data=True,
   install_requires=[
@@ -58,4 +58,3 @@ setup(
     "Topic :: Multimedia :: Sound/Audio",
   ],
 )
-

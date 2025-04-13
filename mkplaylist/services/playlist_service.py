@@ -26,7 +26,7 @@ class PlaylistService:
   ):
     """
         Initialize the playlist service.
-        
+
         Args:
             db_manager: Database manager instance
             spotify_client: Spotify client instance
@@ -48,7 +48,7 @@ class PlaylistService:
   ) -> Dict[str, Any]:
     """
         Create or update a Spotify playlist based on criteria.
-        
+
         Args:
             name: Name for the playlist
             criteria: Custom criteria string for selecting tracks
@@ -57,7 +57,7 @@ class PlaylistService:
             collaborative: Whether the playlist should be collaborative
             replace: Whether to replace all tracks in the playlist
             limit: Maximum number of tracks to include
-            
+
         Returns:
             Summary of the operation
         """
@@ -165,10 +165,10 @@ class PlaylistService:
   def get_tracks_by_criteria(self, criteria: Dict[str, Any]) -> List[Any]:
     """
         Get tracks matching the given criteria.
-        
+
         Args:
             criteria: Dictionary of criteria to filter tracks
-            
+
         Returns:
             List of Track objects matching the criteria
         """
@@ -203,11 +203,11 @@ class PlaylistService:
                      sort: str = 'updated') -> List[Dict[str, Any]]:
     """
         List all playlists that have been created or updated by mkplaylist.
-        
+
         Args:
             format: Output format ('table', 'json', 'csv')
             sort: Sort order ('name', 'date', 'updated')
-            
+
         Returns:
             List of playlist information
         """

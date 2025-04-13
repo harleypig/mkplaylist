@@ -27,7 +27,7 @@ class SyncService:
   ):
     """
         Initialize the sync service.
-        
+
         Args:
             db_manager: Database manager instance
             spotify_client: Spotify client instance
@@ -43,10 +43,10 @@ class SyncService:
   def sync_spotify_playlists(self, full_sync: bool = False) -> Dict[str, Any]:
     """
         Sync playlists from Spotify.
-        
+
         Args:
             full_sync: Whether to perform a full sync
-            
+
         Returns:
             Summary of the sync operation
         """
@@ -180,11 +180,11 @@ class SyncService:
   ) -> Dict[str, Any]:
     """
         Sync listening history from Last.fm.
-        
+
         Args:
             days: Number of days of history to sync
             username: Last.fm username (defaults to configured username)
-            
+
         Returns:
             Summary of the sync operation
         """
@@ -281,13 +281,13 @@ class SyncService:
   ) -> Dict[str, Any]:
     """
         Sync all data from Spotify and Last.fm.
-        
+
         Args:
             full_sync: Whether to perform a full Spotify sync
             days: Number of days of Last.fm history to sync
             spotify_only: Only sync Spotify data
             lastfm_only: Only sync Last.fm data
-            
+
         Returns:
             Summary of the sync operation
         """

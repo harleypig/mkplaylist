@@ -25,7 +25,7 @@ class DatabaseManager:
   def __init__(self, db_path=None):
     """
         Initialize the database manager.
-        
+
         Args:
             db_path: Optional path to the database file. If not provided,
                      the default path from config will be used.
@@ -47,10 +47,10 @@ class DatabaseManager:
   def add_track(self, track_data: Dict[str, Any]) -> Track:
     """
         Add a new track or update an existing one.
-        
+
         Args:
             track_data: Dictionary containing track data
-            
+
         Returns:
             The added or updated Track object
         """
@@ -91,10 +91,10 @@ class DatabaseManager:
   def get_track_by_spotify_id(self, spotify_id: str) -> Optional[Track]:
     """
         Get a track by its Spotify ID.
-        
+
         Args:
             spotify_id: The Spotify ID of the track
-            
+
         Returns:
             The Track object if found, None otherwise
         """
@@ -107,10 +107,10 @@ class DatabaseManager:
   def get_tracks_by_criteria(self, criteria: Dict[str, Any]) -> List[Track]:
     """
         Get tracks matching the given criteria.
-        
+
         Args:
             criteria: Dictionary of criteria to filter tracks
-            
+
         Returns:
             List of Track objects matching the criteria
         """
@@ -148,10 +148,10 @@ class DatabaseManager:
   def add_playlist(self, playlist_data: Dict[str, Any]) -> Playlist:
     """
         Add a new playlist or update an existing one.
-        
+
         Args:
             playlist_data: Dictionary containing playlist data
-            
+
         Returns:
             The added or updated Playlist object
         """
@@ -191,10 +191,10 @@ class DatabaseManager:
   def get_playlist_by_spotify_id(self, spotify_id: str) -> Optional[Playlist]:
     """
         Get a playlist by its Spotify ID.
-        
+
         Args:
             spotify_id: The Spotify ID of the playlist
-            
+
         Returns:
             The Playlist object if found, None otherwise
         """
@@ -213,13 +213,13 @@ class DatabaseManager:
   ) -> PlaylistTrack:
     """
         Add a track to a playlist.
-        
+
         Args:
             playlist_id: ID of the playlist
             track_id: ID of the track
             position: Optional position in the playlist
             added_at: Optional timestamp when the track was added
-            
+
         Returns:
             The created PlaylistTrack object
         """
@@ -270,12 +270,12 @@ class DatabaseManager:
   ) -> ListeningHistory:
     """
         Add a new listening event.
-        
+
         Args:
             track_id: ID of the track
             played_at: When the track was played
             source: Source of the play data (default: "lastfm")
-            
+
         Returns:
             The created ListeningHistory object
         """
@@ -309,10 +309,10 @@ class DatabaseManager:
   def get_recently_played_tracks(self, limit: int = 10) -> List[Track]:
     """
         Get the most recently played tracks.
-        
+
         Args:
             limit: Maximum number of tracks to return
-            
+
         Returns:
             List of Track objects
         """

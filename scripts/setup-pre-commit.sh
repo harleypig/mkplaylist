@@ -1,4 +1,3 @@
-
 #!/bin/bash
 # setup-pre-commit.sh - Install pre-commit hooks for mkplaylist
 #
@@ -83,4 +82,3 @@ if [ -f "$ROOT_DIR/scripts/no-commit-to-master.sh" ]; then
 fi
 
 echo "Happy coding!"
-

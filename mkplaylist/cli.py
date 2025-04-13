@@ -14,8 +14,8 @@ import click
 
 from mkplaylist import __version__
 from mkplaylist.config import MkPlaylistConfig, config, validate, status, sources, data_dir, config_dir, cache_dir, state_dir, db_path, get_service, get_services, get_service_names
-    
-     
+
+
 # Set up logging
 logging.basicConfig(
   level=getattr(logging, config.LOG_LEVEL),
@@ -30,11 +30,11 @@ logger = logging.getLogger(__name__)
 def cli():
   """
     Create Spotify playlists based on custom criteria using Last.fm data.
-    
+
     This tool allows you to sync data from Spotify and Last.fm, and then
     create playlists based on criteria like "recently added" and "last played".
     """
-  
+
   # Check configuration
   issues = config.validate()
   if issues:
@@ -46,13 +46,13 @@ def cli():
     )
     click.echo("See the documentation for more information.")
     sys.exit(1)
-    
+
 
 @cli.group()
 def config_cmd():
   """
   View and validate configuration settings.
-  
+
   This command group provides tools to check the status of your configuration
   and validate that all required settings are properly configured.
   """
@@ -71,13 +71,13 @@ def config_cmd():
 def status(format):
   """
   Show the current configuration status.
-  
+
   Displays which configuration items are properly set up and where each
   configuration value is coming from (environment variable, .env file, or default).
   """
   status_dict = config.status()
   sources_dict = config.sources()
-  
+
   if format == 'json':
     import json
     result = {
@@ -89,14 +89,14 @@ def status(format):
     # Text format
     click.echo("Configuration Status:")
     click.echo("=====================")
-    
+
     # Group by service
     services = {
       'spotify': [],
       'lastfm': [],
       'general': []
     }
-    
+
     for key, value in status_dict.items():
       if key.startswith('spotify_'):
         services['spotify'].append((key[8:], value))  # Remove 'spotify_' prefix
@@ -104,7 +104,7 @@ def status(format):
         services['lastfm'].append((key[7:], value))  # Remove 'lastfm_' prefix
       else:
         services['general'].append((key, value))
-    
+
     # Print status by service
     for service, items in services.items():
       if items:
@@ -113,13 +113,13 @@ def status(format):
           status_symbol = "✓" if value else "✗"
           status_color = "green" if value else "red"
           click.secho(f"  {status_symbol} {key.replace('_', ' ').capitalize()}", fg=status_color)
-    
+
     # Print sources
     click.echo("\nConfiguration Sources:")
     click.echo("=====================")
     for key, source in sources_dict.items():
       click.echo(f"  {key}: {source}")
-    
+
     # Print paths
     click.echo("\nConfiguration Paths:")
     click.echo("==================")
@@ -132,7 +132,7 @@ def status(format):
 
 
 @config_cmd.command()
-    
+
 @click.option(
   '--format',
   type=click.Choice(['text', 'json']),
@@ -142,14 +142,14 @@ def status(format):
 def validate(format):
   """
   Validate the configuration and show any issues.
-  
+
   Checks that all required configuration values are set and properly formatted.
   """
 
   # Check configuration
   issues = config.validate()
-    
-  
+
+
   if format == 'json':
     import json
     result = {
@@ -165,12 +165,12 @@ def validate(format):
       click.secho("Configuration issues found:", fg="red")
       for key, message in issues.items():
         click.echo(f"  ✗ {key}: {message}")
-      
+
       click.echo("\nTo fix these issues:")
       click.echo("  1. Set the required environment variables, or")
       click.echo("  2. Create a .env file with the required values")
       click.echo("\nSee the documentation for more information.")
-  
+
 
 
 
@@ -241,9 +241,9 @@ def create(
 ):
   """
     Create or update a Spotify playlist based on custom criteria.
-    
+
     PLAYLIST_NAME is the name for the playlist (will be created if it doesn't exist).
-    
+
     CRITERIA is a custom criteria string for selecting tracks, such as:
     "10 most recently added songs and 10 last played songs"
     """
@@ -305,6 +305,3 @@ def main():
 
 if __name__ == '__main__':
   main()
-
-
-

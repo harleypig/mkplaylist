@@ -51,12 +51,12 @@ class SpotifyConfig(ServiceConfig):
     This class handles loading Spotify-specific configuration from environment
     variables, managing API credentials, and providing validation.
     """
-    
+
     @property
     def service_name(self) -> str:
         """
         Get the name of the service.
-        
+
         Returns:
             str: The name of the service ('spotify')
         """
@@ -65,7 +65,7 @@ class SpotifyConfig(ServiceConfig):
     def __init__(self):
         """
         Initialize the Spotify configuration.
-        
+
         Loads environment variables and initializes configuration attributes
         for Spotify API credentials.
         """
@@ -88,9 +88,9 @@ class SpotifyConfig(ServiceConfig):
     def validate(self) -> Dict[str, str]:
         """
         Validate the Spotify configuration and return any issues.
-        
+
         Checks that required API credentials are set and properly formatted.
-        
+
         Returns:
             Dict[str, str]: A dictionary of configuration issues, with keys as issue identifiers
                             and values as error messages. Empty if all is valid.
@@ -122,10 +122,10 @@ class SpotifyConfig(ServiceConfig):
     def status(self) -> Dict[str, bool]:
         """
         Get the status of Spotify configuration items.
-        
+
         Provides a quick overview of which Spotify configuration components
         are properly set up.
-        
+
         Returns:
             Dict[str, bool]: A dictionary with configuration items as keys and their status as boolean values.
                              True indicates the item is properly configured.
@@ -160,4 +160,3 @@ class SpotifyConfig(ServiceConfig):
             'SPOTIFY_CLIENT_SECRET': self.source('SPOTIFY_CLIENT_SECRET'),
             'SPOTIFY_REDIRECT_URI': self.source('SPOTIFY_REDIRECT_URI'),
         }
-

@@ -33,7 +33,7 @@ class SpotifyClient:
   ):
     """
         Initialize the Spotify client.
-        
+
         Args:
             client_id: Spotify client ID (defaults to config)
             client_secret: Spotify client secret (defaults to config)
@@ -44,13 +44,13 @@ class SpotifyClient:
     self.client_id = client_id or self.config.SPOTIFY_CLIENT_ID
     self.client_secret = client_secret or self.config.SPOTIFY_CLIENT_SECRET
     self.redirect_uri = redirect_uri or self.config.SPOTIFY_REDIRECT_URI
-    
+
     self.sp = None
 
   def authenticate(self, scope: Optional[str] = None) -> None:
     """
         Authenticate with the Spotify API.
-        
+
         Args:
             scope: Optional scope string for authorization
         """
@@ -65,7 +65,7 @@ class SpotifyClient:
 
     # Use the state directory for token storage
     token_path = f"{self.config.state_dir()}/spotify_token.json"
-    
+
     auth_manager = SpotifyOAuth(
       client_id=self.client_id,
       client_secret=self.client_secret,
@@ -73,7 +73,7 @@ class SpotifyClient:
       scope=scope,
       cache_path=token_path
     )
-    
+
 
     self.sp = spotipy.Spotify(auth_manager=auth_manager)
     logger.info("Authenticated with Spotify API")
@@ -94,7 +94,7 @@ class SpotifyClient:
   def get_current_user(self) -> Dict[str, Any]:
     """
         Get the current user's profile.
-        
+
         Returns:
             The user profile data
         """
@@ -104,10 +104,10 @@ class SpotifyClient:
   def get_user_playlists(self, limit: int = 50) -> List[Dict[str, Any]]:
     """
         Get the current user's playlists.
-        
+
         Args:
             limit: Maximum number of playlists to return
-            
+
         Returns:
             List of playlist objects
         """
@@ -128,10 +128,10 @@ class SpotifyClient:
   def get_playlist(self, playlist_id: str) -> Dict[str, Any]:
     """
         Get a specific playlist.
-        
+
         Args:
             playlist_id: The Spotify ID of the playlist
-            
+
         Returns:
             The playlist object
         """
@@ -141,10 +141,10 @@ class SpotifyClient:
   def get_playlist_tracks(self, playlist_id: str) -> List[Dict[str, Any]]:
     """
         Get all tracks in a playlist.
-        
+
         Args:
             playlist_id: The Spotify ID of the playlist
-            
+
         Returns:
             List of track objects
         """
@@ -173,12 +173,12 @@ class SpotifyClient:
   ) -> Dict[str, Any]:
     """
         Create a new playlist.
-        
+
         Args:
             name: The name of the playlist
             description: Optional description for the playlist
             public: Whether the playlist should be public
-            
+
         Returns:
             The created playlist object
         """
@@ -193,11 +193,11 @@ class SpotifyClient:
                              track_uris: List[str]) -> Dict[str, Any]:
     """
         Add tracks to a playlist.
-        
+
         Args:
             playlist_id: The Spotify ID of the playlist
             track_uris: List of Spotify track URIs to add
-            
+
         Returns:
             The API response
         """
@@ -220,11 +220,11 @@ class SpotifyClient:
                               track_uris: List[str]) -> Dict[str, Any]:
     """
         Replace all tracks in a playlist.
-        
+
         Args:
             playlist_id: The Spotify ID of the playlist
             track_uris: List of Spotify track URIs to add
-            
+
         Returns:
             The API response
         """
@@ -246,11 +246,11 @@ class SpotifyClient:
   ) -> Dict[str, Any]:
     """
         Remove tracks from a playlist.
-        
+
         Args:
             playlist_id: The Spotify ID of the playlist
             track_uris: List of Spotify track URIs to remove
-            
+
         Returns:
             The API response
         """
@@ -274,11 +274,11 @@ class SpotifyClient:
   def search_tracks(self, query: str, limit: int = 10) -> List[Dict[str, Any]]:
     """
         Search for tracks.
-        
+
         Args:
             query: Search query
             limit: Maximum number of tracks to return
-            
+
         Returns:
             List of track objects
         """
@@ -290,10 +290,10 @@ class SpotifyClient:
   def get_track(self, track_id: str) -> Dict[str, Any]:
     """
         Get a specific track.
-        
+
         Args:
             track_id: The Spotify ID of the track
-            
+
         Returns:
             The track object
         """
@@ -303,10 +303,10 @@ class SpotifyClient:
   def get_several_tracks(self, track_ids: List[str]) -> List[Dict[str, Any]]:
     """
         Get several tracks.
-        
+
         Args:
             track_ids: List of Spotify track IDs
-            
+
         Returns:
             List of track objects
         """
@@ -324,4 +324,3 @@ class SpotifyClient:
         time.sleep(1)
 
     return tracks
-

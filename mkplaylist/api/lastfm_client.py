@@ -28,7 +28,7 @@ class LastFmClient:
   ):
     """
         Initialize the Last.fm client.
-        
+
         Args:
             api_key: Last.fm API key (defaults to config)
             api_secret: Last.fm API secret (defaults to config)
@@ -54,10 +54,10 @@ class LastFmClient:
   def get_user(self, username: Optional[str] = None) -> pylast.User:
     """
         Get a Last.fm user.
-        
+
         Args:
             username: The username (defaults to the configured username)
-            
+
         Returns:
             The User object
         """
@@ -73,13 +73,13 @@ class LastFmClient:
   ) -> List[Dict[str, Any]]:
     """
         Get a user's recently played tracks.
-        
+
         Args:
             username: The username (defaults to the configured username)
             limit: Maximum number of tracks to return
             from_date: Start date for the range
             to_date: End date for the range
-            
+
         Returns:
             List of track objects
         """
@@ -126,12 +126,12 @@ class LastFmClient:
   ) -> List[Dict[str, Any]]:
     """
         Get a user's top tracks.
-        
+
         Args:
             username: The username (defaults to the configured username)
             period: Time period ('overall', '7day', '1month', '3month', '6month', '12month')
             limit: Maximum number of tracks to return
-            
+
         Returns:
             List of track objects
         """
@@ -164,12 +164,12 @@ class LastFmClient:
   ) -> Dict[str, Any]:
     """
         Get detailed information about a track.
-        
+
         Args:
             artist: The artist name
             track: The track name
             username: The username for personalized data (defaults to the configured username)
-            
+
         Returns:
             Track information
         """
@@ -219,12 +219,12 @@ class LastFmClient:
   ) -> bool:
     """
         Scrobble a track (mark as played).
-        
+
         Args:
             artist: The artist name
             track: The track name
             timestamp: When the track was played (defaults to now)
-            
+
         Returns:
             True if successful, False otherwise
         """
@@ -255,12 +255,12 @@ class LastFmClient:
                          limit: int = 10) -> List[Dict[str, Any]]:
     """
         Get tracks similar to the given track.
-        
+
         Args:
             artist: The artist name
             track: The track name
             limit: Maximum number of tracks to return
-            
+
         Returns:
             List of similar tracks
         """

@@ -43,10 +43,10 @@ class QueryParser:
   def parse(self, criteria_string: str) -> Dict[str, Any]:
     """
         Parse a criteria string into a dictionary of criteria.
-        
+
         Args:
             criteria_string: Natural language-like criteria string
-            
+
         Returns:
             Dictionary of criteria
         """
@@ -77,10 +77,10 @@ class QueryParser:
   def _parse_single_criteria(self, criteria_string: str) -> Dict[str, Any]:
     """
         Parse a single criteria string.
-        
+
         Args:
             criteria_string: Single criteria string
-            
+
         Returns:
             Dictionary of criteria
         """
@@ -97,11 +97,11 @@ class QueryParser:
                       match: re.Match) -> Dict[str, Any]:
     """
         Build criteria dictionary from a regex match.
-        
+
         Args:
             pattern_name: Name of the matched pattern
             match: Regex match object
-            
+
         Returns:
             Dictionary of criteria
         """
@@ -170,7 +170,7 @@ class QueryParser:
   def get_supported_patterns(self) -> List[str]:
     """
         Get a list of supported criteria patterns.
-        
+
         Returns:
             List of pattern descriptions
         """

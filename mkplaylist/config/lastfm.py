@@ -51,7 +51,7 @@ def is_valid_username(value: str) -> Tuple[bool, str]:
 class LastfmConfig(ServiceConfig):
     """
     Last.fm configuration class for mkplaylist.
-    
+
     This class handles loading Last.fm-specific configuration from environment
     variables, managing API credentials, and providing validation.
     """
@@ -59,12 +59,12 @@ class LastfmConfig(ServiceConfig):
     def service_name(self) -> str:
         """
         Get the name of the service.
-        
+
         Returns:
             str: The name of the service ('lastfm')
         """
         return 'lastfm'
-    
+
     def __init__(self):
         """
         Initialize the Last.fm configuration.
@@ -156,7 +156,7 @@ class LastfmConfig(ServiceConfig):
             Dict[str, str]: A dictionary with configuration items as keys and their sources as string values.
                         Possible sources: "Environment variable", ".env file",
 
-    
+
                         ".env file (overriding environment variable)", or "Default value".
         """
         return {
@@ -164,5 +164,3 @@ class LastfmConfig(ServiceConfig):
             'LASTFM_API_SECRET': self.source('LASTFM_API_SECRET'),
             'LASTFM_USERNAME': self.source('LASTFM_USERNAME'),
         }
-
-
