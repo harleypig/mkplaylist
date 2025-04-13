@@ -143,6 +143,9 @@ Note: mypy doesn't automatically fix issues in either configuration.
 These hooks check for issues in the default configuration but can modify files
 to fix issues when run with the with-fixes configuration.
 
+See the `Running pre-commit` section above for details on how to run these
+hooks via `pre-commit`.
+
 #### trailing-whitespace (with-fixes only)
 Removes trailing whitespace at the end of lines.
 
