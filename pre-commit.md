@@ -35,19 +35,16 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml <hook-id> --all-files
 
 ### no-commit-to-master
 
-This hook prevents commits to the master/main branch. It behaves the same in both configurations and will abort the commit process with an error message if you try to commit directly to master/main.
+This hook prevents commits to the master/main branch. It behaves the same in
+both configurations and will abort the commit process with an error message if
+you try to commit directly to master/main.
 
-**Default:**
 ```bash
 ./scripts/no-commit-to-master.sh
 ```
 
-**With fixes:**
-```bash
-./scripts/no-commit-to-master.sh
-```
-
-Note: This hook doesn't make any changes to files. It simply blocks the commit if it's on a protected branch.
+Note: This hook doesn't make any changes to files. It simply blocks the commit
+if it's on a protected branch.
 
 ### trailing-whitespace
 
