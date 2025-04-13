@@ -224,6 +224,19 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml ruff --all-files
 ruff check --fix .
 ```
 
+#### doctoc
+Generates or updates a table of contents for markdown files.
+
+**Default (check only):**
+```bash
+doctoc --title "## Table of Contents" --maxlevel 4 --check pre-commit.md
+```
+
+**With fixes:**
+```bash
+doctoc --title "## Table of Contents" --maxlevel 4 pre-commit.md
+```
+
 ## Tips for Debugging
 
 1. Run specific hooks on specific files:
