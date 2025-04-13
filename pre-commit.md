@@ -182,17 +182,17 @@ isort --check --jobs=-1 .
 isort --jobs=-1 .
 ```
 
-#### black
-Formats Python code.
+#### yapf
+Formats Python code according to the style defined in `.style.yapf`.
 
 **Default (check only):**
 ```bash
-black --check --diff .
+yapf --diff --recursive .
 ```
 
 **With fixes:**
 ```bash
-black .
+yapf --in-place --recursive .
 ```
 
 #### pyupgrade (with-fixes only)
