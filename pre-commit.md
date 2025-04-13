@@ -231,7 +231,7 @@ Generates or updates a table of contents for markdown files.
 
 **With fixes:**
 ```bash
-doctoc --maxlevel 2 pre-commit.md
+doctoc --maxlevel 2 your-markdown-file.md
 ```
 
 ## Tips for Debugging
