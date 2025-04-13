@@ -13,8 +13,6 @@ repos:
         # This hook runs regardless of which files are being committed
         # It checks the current branch name and blocks commits to master/main
 
-  - repo: local
-    hooks:
       - id: check-files
         name: Check for trailing whitespace and missing newlines
         entry: scripts/check-files.sh
@@ -43,7 +41,7 @@ repos:
     rev: 6.0.1
     hooks:
       - id: isort
-        args: [ --check, --jobs=-1 ]
+        args: [--check, --jobs=-1]
         # Only check, don't modify, use all cpus
 
   - repo: https://github.com/psf/black

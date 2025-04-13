@@ -60,6 +60,9 @@ pre-commit run check-files --all-files
 ./scripts/check-files.sh
 ```
 
+Note: This checks for trailing whitespaces and missing newlines. See the
+matching sections below for the fixes.
+
 ### trailing-whitespace (with-fixes only)
 
 Removes trailing whitespace at the end of lines.

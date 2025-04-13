@@ -12,7 +12,7 @@ trailing_whitespace_found=0
 missing_newline_found=0
 
 # Check for trailing whitespace
-echo "Checking for trailing whitespace..."
+echo "Checking for trailing whitespace and missing final newlines ..."
 for file in "${files[@]}"; do
   # Skip markdown files for trailing whitespace check
   if [[ "$file" != *.md ]]; then
@@ -21,12 +21,9 @@ for file in "${files[@]}"; do
       trailing_whitespace_found=1
     fi
   fi
-done
 
-# Check for missing final newlines
-echo "Checking for missing final newlines..."
-for file in "${files[@]}"; do
-  if [ -s "$file" ] && [ -n "$(tail -c 1 "$file")" ]; then
+  # Check for missing final newlines
+  if [[ -s "$file" ]] && [[ -n "$(tail -c 1 "$file")" ]]; then
     echo "Missing final newline in: $file"
     missing_newline_found=1
   fi
