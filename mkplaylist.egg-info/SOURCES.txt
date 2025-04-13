@@ -12,6 +12,11 @@ mkplaylist.egg-info/top_level.txt
 mkplaylist/api/__init__.py
 mkplaylist/api/lastfm_client.py
 mkplaylist/api/spotify_client.py
+mkplaylist/config/__init__.py
+mkplaylist/config/base.py
+mkplaylist/config/deezer.py
+mkplaylist/config/lastfm.py
+mkplaylist/config/spotify.py
 mkplaylist/database/__init__.py
 mkplaylist/database/db_manager.py
 mkplaylist/database/models.py
