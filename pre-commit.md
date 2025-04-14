@@ -135,7 +135,7 @@ Checks for files containing merge conflict strings.
 
 **Direct command:**
 ```bash
-grep -l "<<<<<<< HEAD" $(find . -type f -not -path "*/\.*" -not -path "*/venv/*")
+grep -E -l "<{7} HEAD" $(find . -type f -not -path "*/\.*" -not -path "*/venv/*")
 ```
 
 #### debug-statements
