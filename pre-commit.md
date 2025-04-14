@@ -1,3 +1,36 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [`pre-commit` Hooks Guide](#pre-commit-hooks-guide)
+  - [Running `pre-commit`](#running-pre-commit)
+    - [All Hooks](#all-hooks)
+    - [Single Hook](#single-hook)
+  - [Hook Categories](#hook-categories)
+    - [Custom Local Hooks](#custom-local-hooks)
+      - [no-commit-to-master](#no-commit-to-master)
+      - [check-files](#check-files)
+    - [Validation-Only Hooks](#validation-only-hooks)
+      - [check-yaml](#check-yaml)
+      - [check-added-large-files](#check-added-large-files)
+      - [check-toml](#check-toml)
+      - [check-merge-conflict](#check-merge-conflict)
+      - [debug-statements](#debug-statements)
+      - [check-case-conflict](#check-case-conflict)
+      - [flake8](#flake8)
+      - [mypy](#mypy)
+    - [Check-Only in Default, Fix in With-Fixes](#check-only-in-default-fix-in-with-fixes)
+      - [trailing-whitespace (with-fixes only)](#trailing-whitespace-with-fixes-only)
+      - [end-of-file-fixer (with-fixes only)](#end-of-file-fixer-with-fixes-only)
+      - [isort](#isort)
+      - [yapf](#yapf)
+      - [pyupgrade (with-fixes only)](#pyupgrade-with-fixes-only)
+      - [ruff (with-fixes only)](#ruff-with-fixes-only)
+      - [doctoc (with-fixes only)](#doctoc-with-fixes-only)
+  - [Tips for Debugging](#tips-for-debugging)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # `pre-commit` Hooks Guide
 
 This guide explains how to run each `pre-commit` hook manually from the command
