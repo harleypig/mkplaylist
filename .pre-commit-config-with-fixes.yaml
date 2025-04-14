@@ -3,8 +3,8 @@
 # To use this configuration, run:
 #   pre-commit run --config .pre-commit-config-with-fixes.yaml --all-files
 # Or for specific files:
-#   pre-commit run --config .pre-commit-config-with-fixes.yaml --files file1.py file2.py
-
+#   pre-commit run --config .pre-commit-config-with-fixes.yaml --files *.py
+---
 repos:
   # Branch protection hook - runs first to fail fast
   - repo: local

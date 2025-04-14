@@ -1,6 +1,6 @@
 # Default pre-commit configuration for mkplaylist
 # This configuration only checks code without making changes
-
+---
 repos:
   # Branch protection hook - runs first to fail fast
   - repo: local
@@ -18,7 +18,7 @@ repos:
         entry: scripts/check-files.sh
         language: script
         pass_filenames: false
-        # This hook checks all files for trailing whitespace and missing newlines
+        # checks all files for trailing whitespace and missing newlines
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
