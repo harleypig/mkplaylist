@@ -111,7 +111,7 @@ Validates YAML files.
 
 **Direct command:**
 ```bash
-find . -name "*.yaml" -o -name "*.yml" | xargs yamllint
+find . -type f \( -name "*.yaml" -o -name "*.yml" \) -not -path "*/venv/*" | xargs yamllint
 ```
 
 #### check-added-large-files
@@ -127,7 +127,7 @@ Validates TOML files.
 
 **Direct command:**
 ```bash
-find . -name "*.toml" | xargs python -c "import tomli; [tomli.loads(open(f).read()) for f in __import__('sys').argv[1:]]"
+find . -name "*.toml" -not -path "*/venv/*" | xargs python -c "import tomli; [tomli.loads(open(f).read()) for f in __import__('sys').argv[1:]]"
 ```
 
 #### check-merge-conflict
@@ -241,7 +241,7 @@ pre-commit run --config .pre-commit-config-with-fixes.yaml pyupgrade --all-files
 
 **Direct command:**
 ```bash
-find . -name "*.py" | xargs pyupgrade --py38-plus
+find . -name "*.py" -not -path "*/venv/*" | xargs pyupgrade --py38-plus
 ```
 
 #### ruff (with-fixes only)
