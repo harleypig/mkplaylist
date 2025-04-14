@@ -11,7 +11,7 @@ from mkplaylist.services.sync_service import SyncService
 from mkplaylist.services.playlist_service import PlaylistService
 
 __all__ = [
-    "SyncService",
-    "PlaylistService",
-    "QueryParser",
+  "SyncService",
+  "PlaylistService",
+  "QueryParser",
 ]

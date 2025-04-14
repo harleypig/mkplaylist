@@ -9,6 +9,6 @@ from mkplaylist.api.lastfm_client import LastFmClient
 from mkplaylist.api.spotify_client import SpotifyClient
 
 __all__ = [
-    "SpotifyClient",
-    "LastFmClient",
+  "SpotifyClient",
+  "LastFmClient",
 ]

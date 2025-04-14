@@ -12,10 +12,10 @@ from mkplaylist.database.models import (
 from mkplaylist.database.db_manager import DatabaseManager
 
 __all__ = [
-    "Base",
-    "Track",
-    "Playlist",
-    "PlaylistTrack",
-    "ListeningHistory",
-    "DatabaseManager",
+  "Base",
+  "Track",
+  "Playlist",
+  "PlaylistTrack",
+  "ListeningHistory",
+  "DatabaseManager",
 ]

@@ -10,15 +10,7 @@ import os
 import logging
 
 from typing import (
-  Any,
-  Dict,
-  List,
-  Type,
-  Tuple,
-  Union,
-  TypeVar,
-  Callable,
-  Optional,
+  Any, Dict, List, Type, Tuple, Union, TypeVar, Callable, Optional,
 )
 from pathlib import Path
 
