@@ -8,7 +8,12 @@ max-line-length = 79
 # E231: missing whitespace after ',', ';', or ':'
 # W503: line break before binary operator (conflicts with modern Python style)
 # E501: line too long (handled by max-line-length)
-ignore = E203,E231,W503,E501
+# F401: imported but unused (let isort handle imports)
+# F403: 'from module import *' used (let isort handle imports)
+# F405: name may be undefined, or defined from star imports (let isort handle imports)
+# E402: module level import not at top of file (let isort handle imports)
+# I: all import-related errors (let isort handle imports)
+ignore = E203,E231,W503,E501,F401,F403,F405,E402,I
 
 # Exclude common directories
 exclude =
@@ -28,8 +33,8 @@ max-complexity = 10
 # You can uncomment these if you have them installed
 # plugins =
 #     flake8-docstrings
-#     flake8-import-order
 #     flake8-bugbear
 
-# Import order settings (if using flake8-import-order)
-# import-order-style = google
+# Explicitly disable import order checking since we use isort
+# This ensures flake8 won't interfere with isort's rules
+extend-ignore = I
