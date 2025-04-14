@@ -143,7 +143,7 @@ Checks for debugger imports and py37+ `breakpoint()` calls.
 
 **Direct command:**
 ```bash
-grep -r "import pdb\|import ipdb\|breakpoint()" --include="*.py" .
+grep -r "import pdb\|import ipdb\|breakpoint()" --include="*.py" --exclude-dir="venv" .
 ```
 
 #### check-case-conflict
