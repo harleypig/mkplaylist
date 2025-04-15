@@ -18,7 +18,9 @@ all-in-one solution.
 
 ## Installation
 
-You can install all the required code quality tools using pip:
+### Code Quality Tools
+
+You can install most of the required code quality tools using pip:
 
 ```bash
 # Install all development dependencies including code quality tools
@@ -30,7 +32,21 @@ This will install the following code quality tools:
 - isort: For import sorting
 - yapf: For code formatting
 - mypy: For type checking
-- pre-commit: For running checks before committing
+
+### pre-commit
+
+pre-commit should be installed globally, not in the virtual environment:
+
+```bash
+# Install pre-commit globally
+pip install --user pre-commit
+
+# Or with homebrew on macOS
+brew install pre-commit
+
+# Initialize pre-commit in the repository
+pre-commit install
+```
 
 ## Configuration Files
 
