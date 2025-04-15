@@ -1,6 +1,7 @@
-# Code Quality Tools
+# Code Quality
 
-This document describes the code quality tools used in this project, how to install them, and where their configuration files are located.
+This document describes the code quality tools used in this project, how to
+install them, and where their configuration files are located.
 
 ## Purpose
 
@@ -11,7 +12,9 @@ The purpose of this document is to:
 3. **Explain the configuration** of each tool and where to find the configuration files
 4. **Describe the workflow** for using these tools effectively
 
-We follow the Unix philosophy of "do one thing and do it well" by using specialized tools for different aspects of code quality rather than a single all-in-one solution.
+We follow the Unix philosophy of "do one thing and do it well" by using
+specialized tools for different aspects of code quality rather than a single
+all-in-one solution.
 
 ## Installation
 
@@ -46,7 +49,8 @@ Each tool has its own configuration file:
 
 ### Linting
 
-**flake8** is a code linter that checks Python code for style and programming errors, enforcing PEP 8 style guide.
+**flake8** is a code linter that checks Python code for style and programming
+errors, enforcing PEP 8 style guide.
 
 - Configuration: `.flake8`
 - Usage: `flake8 .`
@@ -54,7 +58,8 @@ Each tool has its own configuration file:
 
 ### Import Sorting
 
-**isort** automatically sorts and formats import statements according to PEP 8 guidelines.
+**isort** automatically sorts and formats import statements according to PEP
+8 guidelines.
 
 - Configuration: `.isort.cfg`
 - Usage: `isort --check .` (check only) or `isort .` (fix)
@@ -62,7 +67,8 @@ Each tool has its own configuration file:
 
 ### Code Formatting
 
-**yapf** (Yet Another Python Formatter) reformats code to ensure consistent style.
+**yapf** (Yet Another Python Formatter) reformats code to ensure consistent
+style.
 
 - Configuration: `.style.yapf`
 - Usage: `yapf --diff --recursive .` (check only) or `yapf --in-place --recursive .` (fix)
@@ -70,7 +76,8 @@ Each tool has its own configuration file:
 
 ### Type Checking
 
-**mypy** is a static type checker for Python that helps catch certain classes of bugs.
+**mypy** is a static type checker for Python that helps catch certain classes
+of bugs.
 
 - Configuration: Implicit or via `mypy.ini`
 - Usage: `mypy --no-strict-optional --ignore-missing-imports .`
@@ -90,11 +97,13 @@ We use a two-stage approach to code quality:
    pre-commit run --config .pre-commit-config-with-fixes.yaml --all-files
    ```
 
-For more details on running the pre-commit hooks, see [pre-commit.md](../pre-commit.md).
+For more details on running the pre-commit hooks, see
+[pre-commit.md](../pre-commit.md).
 
 ## CI/CD Integration
 
-These tools are also integrated into our CI/CD pipeline to ensure code quality standards are maintained across all contributions.
+These tools are also integrated into our CI/CD pipeline to ensure code quality
+standards are maintained across all contributions.
 
 ## Adding New Tools
 

@@ -18,11 +18,7 @@ from sqlalchemy.orm import Session, sessionmaker
 # Engineering Core Modules
 from mkplaylist import config
 from mkplaylist.database.models import (
-  Base,
-  Track,
-  Playlist,
-  PlaylistTrack,
-  ListeningHistory,
+  Base, Track, Playlist, PlaylistTrack, ListeningHistory,
 )
 
 logger = logging.getLogger(__name__)
